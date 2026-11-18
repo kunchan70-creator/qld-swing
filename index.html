@@ -121,7 +121,7 @@ a{color:var(--sell)}
     <div class="note" id="ruleLots"></div>
   </div>
 
-  <div class="note">규칙: 어제 마감 공포(공포탐욕 30↓ 또는 VIX 30↑) + QQQ 1년 고점 대비 −10~−20% → RSI 30 가격 지정가(이미 30↓면 마감 두 묶음 + 어제 종가 지정가) · 공포 미확정이면 RSI 26 가격 · QLD는 QQQ 하루 −2.5% & 5일 −7.5% 마감이면 한 묶음 · 평균 단가 +5%(QLD) / +7.5%(TQQQ) 전량 매도 · 첫 매수 10거래일째 마감 정리.
+  <div class="note">규칙: 어제 마감 공포(공포탐욕 30↓ 또는 VIX 30↑) + QQQ 1년 고점 대비 −10~−20% → RSI 30 가격 지정가(이미 30↓면 마감 두 묶음 + 어제 종가 지정가) · 공포 미확정이면 RSI 26 가격 · QQQ 하루 −2.5% & 5일 −7.5% 마감이면 한 묶음(QLD·TQQQ) · 평균 단가 +5%(QLD) / +7.5%(TQQQ) 전량 매도 · 첫 매수 10거래일째 마감 정리.
   자세한 근거: <a href="https://claude.ai/artifact/V6shjRDDuvreVmJ6NeRZbu" target="_blank" rel="noopener">교본</a> · 과거 시험일 뿐 앞으로를 보장하지 않습니다. <button class="btn" id="reload" type="button">새로고침</button></div>
 </div>
 
@@ -242,10 +242,10 @@ function render(){
   const ck=[[S.fear,'공포',`공포탐욕 ${S.fg!=null?fmt(S.fg,0):'?'} · VIX ${fmt(S.vix,1)} (공포탐욕 30 이하 또는 VIX 30 이상이면 켜짐)`],
     [S.deep,'하락률 구간',`QQQ 1년 고점 $${fmt(S.hi)} 대비 ${pct(S.dd)} (−10~−20%일 때만 삼)`],
     [S.rsi<30,'RSI 30 아래 마감',`RSI ${fmt(S.rsi,1)} → ${S.rsi<30?'마감 두 묶음 + 어제 종가 지정가':`오늘 밤 QQQ RSI ${S.soft?'26':'30'} 가격 $${fmt(S.soft?S.L26:S.L)}에 지정가`}`]];
-  if(inst==='QLD')ck.push([S.crash,'급락 마감 (QLD만)',`어제 QQQ 하루 ${pct(S.d1)} · 5일 ${pct(S.d5)} (하루 −2.5% & 5일 −7.5%면 한 묶음). 오늘 밤 QQQ $${fmt(S.xline)} 이하 마감이면 내일 아침 한 묶음`]);
+  ck.push([S.crash,'급락 마감',`어제 QQQ 하루 ${pct(S.d1)} · 5일 ${pct(S.d5)} (하루 −2.5% & 5일 −7.5%면 한 묶음). 오늘 밤 QQQ $${fmt(S.xline)} 이하 마감이면 내일 아침 한 묶음`]);
   $('checks').innerHTML=ck.map(([b,t,s])=>`<div class="ck">${y(b)}<div><b>${t}</b><span>${s}</span></div></div>`).join('');
   const q=D.qqq.live,ql=S.soft?S.L26:S.L;
-  $('qqqRow').innerHTML=`<span>QQQ 지금 <b>$${fmt(q.price)}</b></span><span>${S.soft?'RSI 26':'RSI 30'} 가격 <b>$${fmt(ql)}</b> (${pct(ql/q.price-1)})</span>`+(inst==='QLD'?`<span>급락 마감 기준 <b>$${fmt(S.xline)}</b></span>`:'');
+  $('qqqRow').innerHTML=`<span>QQQ 지금 <b>$${fmt(q.price)}</b></span><span>${S.soft?'RSI 26':'RSI 30'} 가격 <b>$${fmt(ql)}</b> (${pct(ql/q.price-1)})</span>`+`<span>급락 마감 기준 <b>$${fmt(S.xline)}</b></span>`;
   const m=mine(inst);$('myAvg').value=m.avg||'';$('myQty').value=m.qty||'';$('myCash').value=m.cash||'';
   $('ruleLots').textContent=I.lots.length?`규칙 추정 보유: `+I.lots.map(l=>`${l.d.slice(5)} $${fmt(l.px)} (${l.how})`).join(' · '):'규칙 추정 보유 없음';
   drawChart();
