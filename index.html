@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>QLD 단타 지금 할 일</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23d6336c'/><path d='M6 22l7-8 5 5 8-10' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+<style>
+:root{--bg:#f6f7f9;--panel:#fff;--ink:#14171c;--sub:#4a5260;--mute:#8a93a1;--line:#e4e7ec;
+ --buy:#e03131;--buy-bg:#fff0f0;--sell:#1c64d9;--sell-bg:#eef4ff;--wait:#5b6676;--wait-bg:#f1f3f6;--warn:#c27500;--warn-bg:#fff6e5;--ok:#11865b;
+ --r:14px;--sh:0 1px 2px rgba(16,24,40,.06),0 4px 16px rgba(16,24,40,.05)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1116;--panel:#171b22;--ink:#e8ebf0;--sub:#aab2bf;--mute:#7d8796;--line:#2a303a;
+ --buy:#ff6b6b;--buy-bg:#2a1719;--sell:#5b9bff;--sell-bg:#152238;--wait:#aab2bf;--wait-bg:#1d222b;--warn:#f0a73a;--warn-bg:#2b2112;--ok:#3ccf8e;--sh:none}}
+:root[data-theme="dark"]{--bg:#0e1116;--panel:#171b22;--ink:#e8ebf0;--sub:#aab2bf;--mute:#7d8796;--line:#2a303a;
+ --buy:#ff6b6b;--buy-bg:#2a1719;--sell:#5b9bff;--sell-bg:#152238;--wait:#aab2bf;--wait-bg:#1d222b;--warn:#f0a73a;--warn-bg:#2b2112;--ok:#3ccf8e;--sh:none}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:anywhere}
+.wrap{max-width:760px;margin:0 auto;padding:12px 16px 40px}
+.top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.top h1{font-size:17px;margin:0 auto 0 0;letter-spacing:-.2px}
+.seg{display:inline-flex;background:var(--wait-bg);border-radius:10px;padding:3px}
+.seg button{border:0;background:none;color:var(--sub);font:600 14px/1 inherit;padding:8px 14px;border-radius:8px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--panel);color:var(--ink);box-shadow:var(--sh)}
+.meta{font-size:12.5px;color:var(--mute);display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:-2px 0 10px}
+.pill{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:99px;background:var(--wait-bg);color:var(--sub)}
+.pill.live{background:var(--buy-bg);color:var(--buy)}.pill.stale{background:var(--warn-bg);color:var(--warn)}
+.card{background:var(--panel);border-radius:var(--r);box-shadow:var(--sh);border:1px solid var(--line);padding:16px;margin-bottom:12px}
+.hero{border-width:2px;padding:18px 18px 16px}
+.hero.buy{border-color:var(--buy);background:linear-gradient(var(--buy-bg),var(--panel) 70%)}
+.hero.sell{border-color:var(--sell);background:linear-gradient(var(--sell-bg),var(--panel) 70%)}
+.hero.warn{border-color:var(--warn);background:linear-gradient(var(--warn-bg),var(--panel) 70%)}
+.hero .tag{font-size:13px;font-weight:800;letter-spacing:.2px}
+.hero.buy .tag{color:var(--buy)}.hero.sell .tag{color:var(--sell)}.hero.warn .tag{color:var(--warn)}.hero.wait .tag{color:var(--wait)}
+.hero h2{font-size:24px;line-height:1.3;margin:4px 0 6px;letter-spacing:-.4px}
+.hero .price{font-size:34px;font-weight:800;letter-spacing:-.8px;font-variant-numeric:tabular-nums}
+.hero.buy .price{color:var(--buy)}.hero.sell .price{color:var(--sell)}.hero.warn .price{color:var(--warn)}
+.hero .why{color:var(--sub);font-size:14px;margin-top:6px}
+.hero .then{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:14px;color:var(--sub)}
+.hero .then b{color:var(--ink)}
+.gauge{margin-top:12px}
+.gauge .bar{position:relative;height:10px;border-radius:99px;background:var(--wait-bg);overflow:visible}
+.gauge .fill{position:absolute;top:0;bottom:0;border-radius:99px}
+.gauge .mark{position:absolute;top:-4px;width:2px;height:18px;background:var(--ink);border-radius:2px}
+.gauge .lbl{display:flex;justify-content:space-between;font-size:12px;color:var(--mute);margin-top:6px;font-variant-numeric:tabular-nums}
+h3{font-size:14px;margin:0 0 10px;color:var(--sub);font-weight:700}
+.tickets{display:grid;gap:8px}
+.tk{display:grid;grid-template-columns:auto 1fr auto;gap:4px 10px;align-items:center;padding:10px 12px;border-radius:10px;background:var(--wait-bg)}
+.tk .k{font-size:12px;font-weight:800;padding:3px 7px;border-radius:6px;color:#fff}
+.tk .k.b{background:var(--buy)}.tk .k.s{background:var(--sell)}.tk .k.w{background:var(--warn)}
+.tk .t{font-weight:700}.tk .t small{display:block;font-weight:400;color:var(--mute);font-size:12.5px}
+.tk .p{font-weight:800;font-size:17px;font-variant-numeric:tabular-nums;text-align:right}
+.tk .p small{display:block;font-weight:600;font-size:12px;color:var(--mute)}
+.tk.done{opacity:.55}
+.chartbox{position:relative;height:330px;margin:0 -6px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--sub);margin-top:8px}
+.legend i{display:inline-block;width:16px;height:0;border-top:2px dashed;vertical-align:middle;margin-right:5px}
+.checks{display:grid;gap:8px}
+.ck{display:grid;grid-template-columns:24px 1fr;gap:8px;align-items:start}
+.ck .ic{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:900;color:#fff}
+.ck .ic.y{background:var(--ok)}.ck .ic.n{background:var(--mute)}
+.ck b{display:block}.ck span{color:var(--sub);font-size:13.5px}
+.mine{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mine label{font-size:12.5px;color:var(--sub);display:grid;gap:4px}
+.mine input{font:inherit;padding:9px 10px;border-radius:9px;border:1px solid var(--line);background:var(--bg);color:var(--ink);width:100%}
+.mine .full{grid-column:1/-1}
+.note{font-size:12.5px;color:var(--mute);margin-top:8px}
+.btn{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:9px;padding:8px 12px;font:600 13px inherit;cursor:pointer}
+.err{background:var(--warn-bg);color:var(--warn);border-radius:10px;padding:10px 12px;font-size:13.5px;margin-bottom:10px;display:none}
+a{color:var(--sell)}
+.small-row{display:flex;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--sub)}
+.small-row b{color:var(--ink);font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <h1>지금 할 일</h1>
+    <div class="seg" id="instSeg" role="group" aria-label="상품"><button type="button" data-v="QLD" aria-pressed="true">QLD</button><button type="button" data-v="TQQQ" aria-pressed="false">TQQQ</button></div>
+  </div>
+  <div class="meta" id="meta"><span class="pill">불러오는 중</span></div>
+  <div class="err" id="err"></div>
+
+  <div class="card hero wait" id="hero">
+    <div class="tag" id="heroTag">불러오는 중</div>
+    <h2 id="heroTitle">잠시만요</h2>
+    <div class="price" id="heroPrice"></div>
+    <div class="why" id="heroWhy"></div>
+    <div class="gauge" id="gauge" hidden><div class="bar"><div class="fill" id="gFill"></div><div class="mark" id="gMark"></div></div><div class="lbl"><span id="gL"></span><span id="gR"></span></div></div>
+    <div class="then" id="heroThen" hidden></div>
+  </div>
+
+  <div class="card">
+    <h3>미리 걸어 둘 주문 <span id="tkSess" style="font-weight:400;color:var(--mute)"></span></h3>
+    <div class="tickets" id="tickets"></div>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+      <h3 style="margin:0 auto 0 0" id="chartTitle">가격과 주문선</h3>
+      <div class="seg" id="rangeSeg" role="group" aria-label="기간"><button type="button" data-v="day" aria-pressed="true">오늘 5분</button><button type="button" data-v="d90" aria-pressed="false">3달</button></div>
+    </div>
+    <div class="chartbox" id="chart"></div>
+    <div class="legend" id="legend"></div>
+  </div>
+
+  <div class="card">
+    <h3>왜 이 주문인가 (어제 QQQ 마감 기준)</h3>
+    <div class="checks" id="checks"></div>
+    <div class="small-row" id="qqqRow" style="margin-top:12px"></div>
+  </div>
+
+  <div class="card">
+    <h3>내 실제 보유 (이 브라우저에만 저장)</h3>
+    <div class="mine">
+      <label>평균 단가 ($)<input id="myAvg" inputmode="decimal" placeholder="예: 71.89"></label>
+      <label>보유 수량 (주)<input id="myQty" inputmode="numeric" placeholder="예: 150"></label>
+      <label class="full">이 상품에 쓰는 돈 (원)<input id="myCash" inputmode="numeric" placeholder="예: 100000000 → 한 묶음 금액·주수 계산"></label>
+    </div>
+    <div class="note">비워 두면 규칙대로 샀다고 보고 추정합니다. 다 팔았으면 지우세요. <button class="btn" id="clearMine" type="button">지우기</button></div>
+    <div class="note" id="ruleLots"></div>
+  </div>
+
+  <div class="note">규칙: 어제 마감 공포(공포탐욕 30↓ 또는 VIX 30↑) + QQQ 1년 고점 대비 −10~−20% → RSI 30 가격 지정가(이미 30↓면 마감 두 묶음 + 어제 종가 지정가) · 공포 미확정이면 RSI 26 가격 · QLD는 QQQ 하루 −2.5% & 5일 −7.5% 마감이면 한 묶음 · 평균 단가 +5%(QLD) / +10%(TQQQ) 전량 매도 · 첫 매수 10거래일째 마감 정리.
+  자세한 근거: <a href="https://claude.ai/artifact/V6shjRDDuvreVmJ6NeRZbu" target="_blank" rel="noopener">교본</a> · 과거 시험일 뿐 앞으로를 보장하지 않습니다. <button class="btn" id="reload" type="button">새로고침</button></div>
+</div>
+
+<script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
+<script>
+const SRC=location.search.includes('local')?['data.json']:['https://api.github.com/repos/kunchan70-creator/qld-swing/contents/data.json?ref=data','https://raw.githubusercontent.com/kunchan70-creator/qld-swing/data/data.json'];
+const $=id=>document.getElementById(id);
+const fmt=(x,d=2)=>x==null||isNaN(x)?'–':Number(x).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
+const pct=x=>x==null||isNaN(x)?'–':(x>0?'+':'')+(x*100).toFixed(1)+'%';
+const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const kst=ts=>{const p=Object.fromEntries(new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Seoul',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(new Date(ts*1000)).map(x=>[x.type,x.value]));return `${p.month}-${p.day} ${p.hour}:${p.minute}`};
+const kstHM=ts=>new Date(ts*1000).toLocaleTimeString('ko-KR',{timeZone:'Asia/Seoul',hour:'2-digit',minute:'2-digit',hour12:false});
+const store={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+let LV=[], D=null, inst=store.get('inst')||'QLD', range='day', chart=null, series=null, lines=[], lastFetch=0;
+
+async function load(){
+  $('err').style.display='none';
+  for(const u of SRC){
+    try{
+      const r=await fetch(u,{cache:'no-cache',headers:u.includes('api.github.com')?{Accept:'application/vnd.github.raw+json'}:{}});
+      if(!r.ok)continue;
+      D=await r.json();lastFetch=Date.now();render();return;
+    }catch(e){}
+  }
+  $('err').textContent='데이터를 못 불러왔어요. 잠시 뒤 새로고침하거나 폰 알림을 따르세요.';$('err').style.display='block';
+}
+
+function phase(now){
+  const o=D.open_ts,c=D.close_ts;
+  if(now<o-5.5*3600)return['before','장 전'];
+  if(now<o)return['pre','프리마켓'];
+  if(now<c)return['regular','정규장'];
+  if(now<c+4*3600)return['post','장 후'];
+  return['after','마감'];
+}
+
+function mine(s){const m=store.get('mine_'+s)||{};return m}
+function position(s,I){
+  const m=mine(s);
+  if(m.avg>0&&m.qty>0)return{src:'mine',avg:+m.avg,qty:+m.qty,tgt:+(m.avg*(1+I.tp)).toFixed(2),n:null,due:I.plan.due,last:I.plan.last};
+  if(I.plan.hold>0)return{src:'rule',avg:I.plan.avg,tgt:I.plan.tgt,n:I.plan.hold,due:I.plan.due,last:I.plan.last};
+  return null;
+}
+function lotInfo(s,I,px){const m=mine(s);if(!(m.cash>0)||!px)return'';const amt=m.cash*I.size;return ` · 한 묶음 ${Math.round(amt/10000).toLocaleString()}만 원 ≈ ${Math.floor(amt/(px*(D.fx||1450)))}주`}
+
+function decide(s){
+  const I=D.inst[s],S=D.signal,now=Date.now()/1000,[ph]=phase(now),L=I.live,price=L.price,pos=position(s,I),P=I.plan,tp=I.tp;
+  const regLow=ph==='regular'||ph==='post'||ph==='after'?L.reg_l:null;
+  const acts=[];
+  const stale=now>=D.close_ts;   // 이 주문표의 장이 끝남 → 마감 확정(20분 뒤) 새 주문표 기다림
+  // 1) 시한 날
+  if(pos&&pos.last&&now<D.close_ts)acts.push({k:'sell',tag:'오늘이 보유 시한',title:'오늘 마감에 보유 전량 정리',price:null,why:`첫 매수 10거래일째. 매도가 $${fmt(pos.tgt)}에 안 팔리면 마감에 정리합니다. '장마감 시장가(MOC)'로 미리 걸어 두면 끝.`});
+  // 2) 목표가 도달
+  if(pos&&price>=pos.tgt)acts.push({k:'sell',tag:'목표가 도달',title:'지금 팔아도 됩니다',price:pos.tgt,why:`현재가 $${fmt(price)} ≥ 매도선 $${fmt(pos.tgt)} (평균 $${fmt(pos.avg)} +${tp*100}%). 지정가 걸어 뒀다면 이미 팔렸을 거예요.`});
+  // 3) 마감 신호 / 급락 마감: 애프터마켓 상한
+  if(I.after_cap&&now<D.close_ts){
+    const ok=price<=I.after_cap;
+    acts.push({k:ok?'buy':'wait',tag:I.after_kind,title:ok?'지금 사도 됩니다':`$${fmt(I.after_cap)} 이하로 내려오면 사기`,price:I.after_cap,
+      why:ok?`현재가 $${fmt(price)} ≤ 사는 상한 $${fmt(I.after_cap)} (어제 종가 +0.5%). 규칙상 어제 마감가에 샀어야 할 묶음이라, 이 가격 이하면 같거나 더 싸게 사는 셈.${lotInfo(s,I,price)}`
+        :`어제 마감에 사야 했던 묶음. 지금 $${fmt(price)}은 상한보다 ${pct(price/I.after_cap-1)} 위라 기다립니다.`+(S.close_sig?` 오늘 밤엔 어제 종가 $${fmt(I.prev_close)} 지정가도 함께 걸어요.`:''),
+      gauge:{price,line:I.after_cap,lab:'사는 상한'}});
+  }
+  // 4) 지정가 매수
+  if(P.buy&&now<D.close_ts){
+    const hit=regLow!=null&&regLow<=P.buy, below=price<=P.buy;
+    let a;
+    if(below&&(ph==='regular'||ph==='pre'))a={k:'buy',tag:P.how,title:'지금 사도 됩니다',price:P.buy,why:`현재가 $${fmt(price)}가 매수선 $${fmt(P.buy)} 아래. 지정가를 걸어 뒀다면 체결됐고, 못 걸었다면 지금 사도 규칙보다 같거나 싸게 사는 셈.${lotInfo(s,I,price)}`};
+    else if(hit)a={k:'wait',tag:P.how+' · 오늘 닿았음',title:'지정가 걸었다면 체결됐어요',price:P.buy,why:`오늘 저가 $${fmt(regLow)} ≤ 매수선 $${fmt(P.buy)}. 지금은 $${fmt(price)}(${pct(price/P.buy-1)})로 올라왔어요. 못 샀다면 $${fmt(P.buy)} 이하로 다시 오면 사기.`};
+    else a={k:ph==='regular'?'wait':'buy',tag:P.how,title:ph==='regular'?'매수 지정가 대기 중':'오늘 밤 매수 지정가 걸어 두기',price:P.buy,
+      why:`현재가 $${fmt(price)}에서 ${pct(P.buy/price-1)} 내려오면 체결. 가격은 장중에 안 바뀝니다.${lotInfo(s,I,P.buy)}`};
+    a.gauge={price,line:P.buy,lab:'매수선'};
+    a.then=`체결되면 → 전량 매도 지정가 <b>$${fmt(P.ntgt)}</b>${P.last?' (시한 날이라 새 묶음만)':''}로 걸거나 고치기 · 다음 장 시작 전까지만 하면 됨`;
+    acts.push(a);
+  }
+  // 5) 보유 유지
+  if(pos&&price<pos.tgt&&!(pos.last&&now<D.close_ts))acts.push({k:'sell',tag:pos.src==='mine'?'보유 중 (내 평균)':'보유 중 (규칙 추정)',title:'전량 매도 지정가 걸어 두기',price:pos.tgt,
+    why:`평균 $${fmt(pos.avg)} +${tp*100}%. 현재 ${pct(price/pos.avg-1)}. 시한 ${pos.due?pos.due.slice(5):'–'} 마감. 당일 주문이면 매일 다시 걸기.`,gauge:{price,line:pos.tgt,lab:'매도선'}});
+  if(!acts.length&&!stale){
+    const need=[];
+    if(!S.fear)need.push('어제 마감 공포(공포탐욕 30↓ 또는 VIX 30↑)');
+    if(!S.deep)need.push(`QQQ가 1년 고점 대비 −10~−20% (지금 ${pct(S.dd)})`);
+    acts.push({k:'wait',tag:'할 일 없음',title:'오늘은 사지 않습니다',price:null,why:need.length?'아직 안 맞은 조건: '+need.join(' · '):'조건 대기 중'});
+  }
+  if(stale)acts.unshift({k:'warn',tag:'새 주문표 계산 중',title:'마감 확정 후 새 주문표가 곧 올라와요',price:null,why:'미국 장 마감 20분 뒤(한국 겨울 06:20 · 여름 05:20쯤) 다음 장 주문이 정해집니다. 그 전엔 어제 주문표 기준이에요.'});
+  return acts;
+}
+
+function render(){
+  if(!D)return;
+  const now=Date.now()/1000,[ph,phName]=phase(now),I=D.inst[inst];
+  document.querySelectorAll('#instSeg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===inst));
+  const age=now-D.updated, live=ph==='regular';
+  $('meta').innerHTML=`<span class="pill ${live?'live':''}">${phName}</span><span>${D.updated_kst} 갱신</span>`+(age>(live?600:3*3600)?'<span class="pill stale">갱신이 늦어요</span>':'')+
+    `<span>· ${inst} 지금 <b style="color:var(--ink)">$${fmt(I.live.price)}</b> (${pct(I.live.price/I.prev_close-1)})</span>`;
+  const acts=decide(inst),h=acts[0];
+  const hero=$('hero');hero.className='card hero '+h.k;
+  $('heroTag').textContent=h.tag;$('heroTitle').textContent=h.title;
+  $('heroPrice').textContent=h.price!=null?'$'+fmt(h.price):'';
+  $('heroWhy').textContent=h.why;
+  if(h.then){$('heroThen').hidden=false;$('heroThen').innerHTML=h.then}else $('heroThen').hidden=true;
+  if(h.gauge){$('gauge').hidden=false;const g=h.gauge,lo=Math.min(g.price,g.line)*0.985,hi=Math.max(g.price,g.line)*1.015,x=v=>((v-lo)/(hi-lo)*100).toFixed(1)+'%';
+    const col=h.k==='sell'?css('--sell'):css('--buy');$('gFill').style.cssText=`left:${x(Math.min(g.price,g.line))};width:calc(${x(Math.max(g.price,g.line))} - ${x(Math.min(g.price,g.line))});background:${col};opacity:.35`;
+    $('gMark').style.left=x(g.price);$('gL').textContent=`${g.lab} $${fmt(g.line)}`;$('gR').textContent=`지금 $${fmt(g.price)} (${pct(g.price/g.line-1)})`}
+  else $('gauge').hidden=true;
+  // 주문표
+  const op=new Date(D.open_ts*1000);
+  $('tkSess').textContent=`· ${D.session.slice(5)} 장 (한국 ${kst(D.open_ts)} 시작)`;
+  const tk=[],P=I.plan,pos=position(inst,I);
+  if(I.after_cap)tk.push({k:'b',t:`${I.after_kind} (애프터마켓 · 주간 · 프리마켓)`,s:`어제 종가 +0.5%까지 · 이미 샀으면 건너뛰기`,p:I.after_cap,ps:'까지 지정가'});
+  if(P.buy)tk.push({k:'b',t:`매수 지정가 · ${P.how}`,s:`계좌 ${I.size*100}% 한 묶음${lotInfo(inst,I,P.buy)}`,p:P.buy,ps:'지정가',done:false});
+  if(pos)tk.push({k:'s',t:'보유 전량 매도 지정가',s:`평균 $${fmt(pos.avg)} +${I.tp*100}% · ${pos.src==='mine'?'내 평균 기준':'규칙 추정 '+pos.n+'묶음'}`,p:pos.tgt,ps:'지정가'});
+  if(P.buy&&P.ntgt)tk.push({k:'s',t:'매수 체결되면 매도가 고치기',s:P.last?'시한 날이라 새로 산 수량만':'보유 전량 · 다음 장 전까지',p:P.ntgt,ps:'로 변경'});
+  if(pos&&pos.last)tk.push({k:'w',t:'시한 정리 (장마감 시장가 MOC)',s:'매도가에 안 팔리면 오늘 마감에 들고 있던 수량 전부',p:null,ps:'MOC'});
+  $('tickets').innerHTML=tk.length?tk.map(x=>`<div class="tk ${x.done?'done':''}"><span class="k ${x.k}">${x.k==='b'?'매수':x.k==='s'?'매도':'정리'}</span><span class="t">${x.t}<small>${x.s}</small></span><span class="p">${x.p!=null?'$'+fmt(x.p):''}<small>${x.ps}</small></span></div>`).join('')
+    :'<div class="note" style="margin:0">걸어 둘 주문이 없습니다.</div>';
+  // 조건
+  const S=D.signal,y=(b)=>`<span class="ic ${b?'y':'n'}">${b?'✓':'–'}</span>`;
+  const ck=[[S.fear,'공포',`공포탐욕 ${S.fg!=null?fmt(S.fg,0):'?'} · VIX ${fmt(S.vix,1)} (공포탐욕 30 이하 또는 VIX 30 이상이면 켜짐)`],
+    [S.deep,'하락률 구간',`QQQ 1년 고점 $${fmt(S.hi)} 대비 ${pct(S.dd)} (−10~−20%일 때만 삼)`],
+    [S.rsi<30,'RSI 30 아래 마감',`RSI ${fmt(S.rsi,1)} → ${S.rsi<30?'마감 두 묶음 + 어제 종가 지정가':`오늘 밤 QQQ RSI ${S.soft?'26':'30'} 가격 $${fmt(S.soft?S.L26:S.L)}에 지정가`}`]];
+  if(inst==='QLD')ck.push([S.crash,'급락 마감 (QLD만)',`어제 QQQ 하루 ${pct(S.d1)} · 5일 ${pct(S.d5)} (하루 −2.5% & 5일 −7.5%면 한 묶음). 오늘 밤 QQQ $${fmt(S.xline)} 이하 마감이면 내일 아침 한 묶음`]);
+  $('checks').innerHTML=ck.map(([b,t,s])=>`<div class="ck">${y(b)}<div><b>${t}</b><span>${s}</span></div></div>`).join('');
+  const q=D.qqq.live,ql=S.soft?S.L26:S.L;
+  $('qqqRow').innerHTML=`<span>QQQ 지금 <b>$${fmt(q.price)}</b></span><span>${S.soft?'RSI 26':'RSI 30'} 가격 <b>$${fmt(ql)}</b> (${pct(ql/q.price-1)})</span>`+(inst==='QLD'?`<span>급락 마감 기준 <b>$${fmt(S.xline)}</b></span>`:'');
+  const m=mine(inst);$('myAvg').value=m.avg||'';$('myQty').value=m.qty||'';$('myCash').value=m.cash||'';
+  $('ruleLots').textContent=I.lots.length?`규칙 추정 보유: `+I.lots.map(l=>`${l.d.slice(5)} $${fmt(l.px)} (${l.how})`).join(' · '):'규칙 추정 보유 없음';
+  drawChart();
+}
+
+function drawChart(){
+  const I=D.inst[inst],el=$('chart');
+  if(!window.LightweightCharts){el.textContent='그래프를 못 불러왔어요';return}
+  if(!chart){
+    chart=LightweightCharts.createChart(el,{autoSize:true,layout:{background:{type:'solid',color:'transparent'},textColor:css('--sub'),fontFamily:'inherit'},
+      grid:{vertLines:{visible:false},horzLines:{color:css('--line')}},rightPriceScale:{borderVisible:false},timeScale:{borderVisible:false,timeVisible:true,secondsVisible:false},
+      crosshair:{mode:0},handleScroll:true,handleScale:true});
+    series=chart.addCandlestickSeries({upColor:css('--buy'),downColor:css('--sell'),borderVisible:false,wickUpColor:css('--buy'),wickDownColor:css('--sell'),priceLineVisible:false});
+  }
+  chart.applyOptions({layout:{textColor:css('--sub')},grid:{horzLines:{color:css('--line')}}});
+  series.applyOptions({upColor:css('--buy'),downColor:css('--sell'),wickUpColor:css('--buy'),wickDownColor:css('--sell')});
+  let data;
+  if(range==='day'){const off=9*3600;data=I.live.bars.map(b=>({time:b[0]+off,open:b[1],high:b[2],low:b[3],close:b[4]}))}
+  else data=I.daily.map(b=>({time:b[0],open:b[1],high:b[2],low:b[3],close:b[4]}));
+  lines.forEach(l=>series.removePriceLine(l));lines=[];LV=[];
+  const P=I.plan,pos=position(inst,I),now=Date.now()/1000,leg=[];
+  const add=(price,color,title,style=2)=>{if(price==null)return;LV.push(price);lines.push(series.createPriceLine({price,color,lineWidth:2,lineStyle:style,axisLabelVisible:true,title}));leg.push(`<span><i style="border-color:${color}"></i>${title} $${fmt(price)}</span>`)};
+  if(now<D.close_ts){
+    if(P.buy)add(P.buy,css('--buy'),'매수선');
+    if(I.after_cap)add(I.after_cap,css('--warn'),'사는 상한');
+  }
+  if(pos){add(pos.tgt,css('--sell'),'매도선');add(pos.avg,css('--mute'),'평균 단가',1)}
+  else if(P.ntgt&&now<D.close_ts)add(P.ntgt,css('--sell'),'체결되면 매도선',3);
+  // 주문선이 늘 화면 안에 보이게 세로 범위를 넓힘
+  series.applyOptions({autoscaleInfoProvider:orig=>{const r=orig();if(!r||!LV.length)return r;const lo=Math.min(r.priceRange.minValue,...LV),hi=Math.max(r.priceRange.maxValue,...LV),pad=(hi-lo)*0.04;return{priceRange:{minValue:lo-pad,maxValue:hi+pad}}}});
+  series.setData(data);chart.timeScale().fitContent();
+  $('legend').innerHTML=leg.join('')||'<span>지금 걸린 주문선 없음</span>';
+  $('chartTitle').textContent=`${inst} ${range==='day'?'오늘 (한국 시간)':'최근 3달'}`;
+}
+
+$('instSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;inst=b.dataset.v;store.set('inst',inst);render()});
+$('rangeSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;range=b.dataset.v;document.querySelectorAll('#rangeSeg button').forEach(x=>x.setAttribute('aria-pressed',x===b));drawChart()});
+['myAvg','myQty','myCash'].forEach(id=>$(id).addEventListener('change',()=>{store.set('mine_'+inst,{avg:parseFloat($('myAvg').value)||null,qty:parseFloat($('myQty').value)||null,cash:parseFloat(String($('myCash').value).replace(/,/g,''))||null});render()}));
+$('clearMine').addEventListener('click',()=>{const m=mine(inst);store.set('mine_'+inst,{cash:m.cash||null});render()});
+$('reload').addEventListener('click',load);
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>D&&render());
+load();
+setInterval(()=>{if(!D)return;const [ph]=phase(Date.now()/1000);const gap=ph==='regular'?120e3:600e3;if(Date.now()-lastFetch>gap)load();else render()},30e3);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&Date.now()-lastFetch>60e3)load()});
+</script>
+</body>
+</html>
