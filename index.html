@@ -197,9 +197,17 @@ function decide(s){
     a.then=`체결되면 → 전량 매도 지정가 <b>$${fmt(P.ntgt)}</b>${P.last?' (시한 날이라 새 묶음만)':''}로 걸거나 고치기 · 다음 장 시작 전까지만 하면 됨`;
     acts.push(a);
   }
+  // 4-2) 4묶음 다 찬 뒤 오는 신호: 규칙상은 안 사지만 표시(2026-11-18 사용자)
+  if((P.full_buy||P.full_close)&&now<D.close_ts){
+    const line=P.full_close&&ph!=='regular'?P.full_close:(P.full_buy||P.full_close), under=price<=line;
+    var fullAct=({k:'warn',tag:'4묶음 다 참 · 규칙 밖 신호',title:under?'신호 가격 아래예요 (표시만)':'오늘도 사는 신호가 있어요 (표시만)',price:line,
+      why:`규칙은 4묶음까지라 더 안 삽니다. 여윳돈이 있으면 사도 되는 가격(2000~ 이런 날 17번 모두 3년 뒤 QQQ가 더 높았음). 샀다면 같은 평균 단가 +${tp*100}% 매도에 합쳐 관리.`,
+      gauge:{price,line,lab:'신호 가격'},prio:under});
+  }
   // 5) 보유 유지
   if(pos&&price<pos.tgt&&!(pos.last&&now<D.close_ts))acts.push({k:'sell',tag:pos.src==='mine'?'보유 중 (내 평균)':'보유 중 (규칙 추정)',title:'전량 매도 지정가 걸어 두기',price:pos.tgt,
     why:`평균 $${fmt(pos.avg)} +${tp*100}%. 현재 ${pct(price/pos.avg-1)}. 시한 ${pos.due?pos.due.slice(5):'–'} 마감. 당일 주문이면 매일 다시 걸기.`,gauge:{price,line:pos.tgt,lab:'매도선'}});
+  if(typeof fullAct!=='undefined'&&fullAct)acts.push(fullAct);
   if(!acts.length&&!stale){
     const need=[];
     if(!S.fear)need.push('어제 마감 공포(공포탐욕 30↓ 또는 VIX 30↑)');
@@ -217,7 +225,7 @@ function render(){
   const age=now-D.updated, live=ph==='regular';
   $('meta').innerHTML=`<span class="pill ${live?'live':''}">${phName}</span><span>${D.updated_kst} 갱신</span>`+(age>(live?600:3*3600)?'<span class="pill stale">갱신이 늦어요</span>':'')+
     `<span>· ${inst} 지금 <b style="color:var(--ink)">$${fmt(I.live.price)}</b> (${pct(I.live.price/I.prev_close-1)})</span>`;
-  const acts=decide(inst),h=acts[0];
+  const acts=decide(inst);acts.sort((a,b)=>(b.prio?1:0)-(a.prio?1:0));const h=acts[0];
   const hero=$('hero');hero.className='card hero '+h.k;
   $('heroTag').textContent=h.tag;$('heroTitle').textContent=h.title;
   $('heroPrice').textContent=h.price!=null?'$'+fmt(h.price):'';
@@ -234,9 +242,11 @@ function render(){
   if(I.after_cap)tk.push({k:'b',t:`${I.after_kind} (애프터마켓 · 주간 · 프리마켓)`,s:`어제 종가 +0.5%까지 · 이미 샀으면 건너뛰기`,p:I.after_cap,ps:'까지 지정가'});
   if(P.buy)tk.push({k:'b',t:`매수 지정가 · ${P.how}`,s:`계좌 ${I.size*100}% 한 묶음${lotInfo(inst,I,P.buy)}`,p:P.buy,ps:'지정가',done:false});
   if(pos)tk.push({k:'s',t:'보유 전량 매도 지정가',s:`평균 $${fmt(pos.avg)} +${I.tp*100}% · ${pos.src==='mine'?'내 평균 기준':'규칙 추정 '+pos.n+'묶음'}`,p:pos.tgt,ps:'지정가'});
+  if(P.full_buy)tk.push({k:'w',t:`신호만 · 4묶음 다 참 (${P.full_how})`,s:'규칙상 더 안 삼 · 여윳돈이면 사도 되는 가격',p:P.full_buy,ps:'표시만',lab:'신호'});
+  if(P.full_close)tk.push({k:'w',t:'신호만 · 4묶음 다 참 (아침 애프터마켓)',s:'어제 종가 +0.5%까지 · 규칙상 더 안 삼',p:P.full_close,ps:'표시만',lab:'신호'});
   if(P.buy&&P.ntgt)tk.push({k:'s',t:'매수 체결되면 매도가 고치기',s:P.last?'시한 날이라 새로 산 수량만':'보유 전량 · 다음 장 전까지',p:P.ntgt,ps:'로 변경'});
   if(pos&&pos.last)tk.push({k:'w',t:'시한 정리 (장마감 시장가 MOC)',s:'매도가에 안 팔리면 오늘 마감에 들고 있던 수량 전부',p:null,ps:'MOC'});
-  $('tickets').innerHTML=tk.length?tk.map(x=>`<div class="tk ${x.done?'done':''}"><span class="k ${x.k}">${x.k==='b'?'매수':x.k==='s'?'매도':'정리'}</span><span class="t">${x.t}<small>${x.s}</small></span><span class="p">${x.p!=null?'$'+fmt(x.p):''}<small>${x.ps}</small></span></div>`).join('')
+  $('tickets').innerHTML=tk.length?tk.map(x=>`<div class="tk ${x.done?'done':''}"><span class="k ${x.k}">${x.lab||(x.k==='b'?'매수':x.k==='s'?'매도':'정리')}</span><span class="t">${x.t}<small>${x.s}</small></span><span class="p">${x.p!=null?'$'+fmt(x.p):''}<small>${x.ps}</small></span></div>`).join('')
     :'<div class="note" style="margin:0">걸어 둘 주문이 없습니다.</div>';
   // 조건
   const S=D.signal,y=(b)=>`<span class="ic ${b?'y':'n'}">${b?'✓':'–'}</span>`;
@@ -271,6 +281,7 @@ function drawChart(){
   const add=(price,color,title,style=2)=>{if(price==null)return;LV.push(price);lines.push(series.createPriceLine({price,color,lineWidth:2,lineStyle:style,axisLabelVisible:true,title}));leg.push(`<span><i style="border-color:${color}"></i>${title} $${fmt(price)}</span>`)};
   if(now<D.close_ts){
     if(P.buy)add(P.buy,css('--buy'),'매수선');
+    if(P.full_buy)add(P.full_buy,css('--mute'),'신호(4묶음 참)',3);
     if(I.after_cap)add(I.after_cap,css('--warn'),'사는 상한');
   }
   if(pos){add(pos.tgt,css('--sell'),'매도선');add(pos.avg,css('--mute'),'평균 단가',1)}
