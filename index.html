@@ -70,6 +70,21 @@ h3{font-size:14px;margin:0 0 10px;color:var(--sub);font-weight:700}
 a{color:var(--sell)}
 .small-row{display:flex;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--sub)}
 .small-row b{color:var(--ink);font-variant-numeric:tabular-nums}
+.pill.buy{background:var(--buy-bg);color:var(--buy)}.pill.sell{background:var(--sell-bg);color:var(--sell)}
+.sthead{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.sthead .pill{font-size:13px;padding:3px 10px}
+.stgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+@media (max-width:560px){.stgrid{grid-template-columns:1fr 1fr}.lott .i{display:none}}
+.st{background:var(--wait-bg);border-radius:10px;padding:8px 10px;min-width:0}
+.st small{display:block;font-size:12px;color:var(--mute)}
+.st b{display:block;font-size:18px;font-variant-numeric:tabular-nums;letter-spacing:-.3px}
+.lotw{overflow-x:auto;margin-top:10px}
+.lott{width:100%;border-collapse:collapse;font-size:13.5px;font-variant-numeric:tabular-nums}
+.lott th{font-size:12px;font-weight:600;color:var(--mute);text-align:left;padding:4px 6px;border-bottom:1px solid var(--line)}
+.lott td{padding:7px 4px;border-bottom:1px solid var(--line);white-space:nowrap}
+.lott td.h{white-space:normal;min-width:7em}.lott td.h b{display:block;font-size:12px;color:var(--buy)}
+.lott .n{text-align:right}.lott tr.pend td{color:var(--mute)}
+.lott .ok{color:var(--ok);font-weight:700}.lott .up{color:var(--buy)}.lott .dn{color:var(--sell)}
 </style>
 </head>
 <body>
@@ -81,6 +96,13 @@ a{color:var(--sell)}
   </div>
   <div class="meta" id="meta"><span class="pill">불러오는 중</span></div>
   <div class="err" id="err"></div>
+
+  <div class="card" id="stCard">
+    <div class="sthead"><h3 style="margin:0" id="stTitle">지금 상태</h3><span class="pill" id="stPill"></span></div>
+    <div class="stgrid" id="stGrid"></div>
+    <div class="lotw" id="stLots"></div>
+    <div class="note" id="stNote"></div>
+  </div>
 
   <div class="card hero wait" id="hero">
     <div class="tag" id="heroTag">불러오는 중</div>
@@ -264,7 +286,50 @@ function render(){
   $('qqqRow').innerHTML=`<span>QQQ 지금 <b>$${fmt(q.price)}</b></span><span>${S.soft?'RSI 26':'RSI 30'} 가격 <b>$${fmt(ql)}</b> (${pct(ql/q.price-1)})</span>`+`<span>급락 마감 기준 <b>$${fmt(S.xline)}</b></span>`;
   const m=mine(inst);$('myAvg').value=m.avg||'';$('myQty').value=m.qty||'';$('myCash').value=m.cash||'';$('myTop').value=m.top||'';
   $('ruleLots').textContent=I.lots.length?`규칙 추정 보유: `+I.lots.map(l=>`${l.d.slice(5)} $${fmt(l.px)} (${l.how})`).join(' · '):'규칙 추정 보유 없음';
+  renderStatus();
   drawChart();
+}
+
+// 2026-11-20 사용자: 판을 열면 지금 상태(매수 중/보유 중) · 몇 묶음 · 평균 단가 · 산 내역이 진짜 산 것처럼 바로 보이게
+const HOW={'마감':'마감 신호 · 애프터','급락':'급락 마감 · 애프터','RSI26':'RSI 26 지정가','지정가':'지정가'};
+function stState(s){
+  const I=D.inst[s],P=I.plan,n=I.lots.length,now=Date.now()/1000,pend=now<D.close_ts&&(P.buy||I.after_cap)&&n<4;
+  if(!n)return pend?['매수 시작 대기','buy']:['쉬는 중 · 보유 없음',''];
+  return pend?[`매수 중 · ${n}/4묶음`,'buy']:[`보유 중 · ${n}/4묶음 · 매도 대기`,'sell'];
+}
+function renderStatus(){
+  const I=D.inst[inst],P=I.plan,now=Date.now()/1000,price=I.live.price,lots=I.lots,n=lots.length,m=mine(inst),fx=D.fx||1450;
+  const [pl,cls]=stState(inst);
+  $('stTitle').textContent=`지금 상태 · ${inst}`;$('stPill').className='pill '+cls;$('stPill').textContent=pl;
+  const won=x=>x>=1e8?(x/1e8).toFixed(2).replace(/\.?0+$/,'')+'억 원':Math.round(x/1e4).toLocaleString()+'만 원';
+  const lotAmt=m.cash>0?m.cash*I.size:null;
+  if(n){
+    const avg=P.avg,tgt=P.tgt;
+    $('stGrid').innerHTML=[
+      ['보유',`${n}묶음`,`계좌 ${+(n*I.size*100).toFixed(0)}%`+(lotAmt?` · ${won(lotAmt*n)}`:'')],
+      ['평균 단가',`$${fmt(avg)}`,`지금 $${fmt(price)} (${pct(price/avg-1)})`],
+      ['전량 매도선',`$${fmt(tgt)}`,P.top?`가장 비싼 $${fmt(P.top)} +${+(I.tp*100).toFixed(1)}%`:`평균 +${+(I.tp*100).toFixed(1)}% · 지금보다 ${pct(tgt/price-1)}`],
+      ['시한',P.due?P.due.slice(5):'–','첫 매수 10거래일째 마감']
+    ].map(([a,b,c])=>`<div class="st"><small>${a}</small><b>${b}</b><small>${c}</small></div>`).join('');
+  } else $('stGrid').innerHTML=`<div class="st" style="grid-column:1/-1"><small>보유</small><b>없음</b><small>${stState(inst)[1]==='buy'?'아래 주문이 체결되면 여기 묶음이 쌓입니다':'사는 조건이 맞을 때까지 기다립니다'}</small></div>`;
+  // 산 내역(규칙대로 샀다고 보고 체결 추정) + 아직 남은 매수
+  const rows=lots.map((l,i)=>{
+    const h=HOW[l.how]||l.how, nowLot=(l.how==='마감'||l.how==='급락')&&l.d===D.made&&I.after_cap&&now<D.close_ts;
+    const sh=lotAmt?Math.floor(lotAmt/(l.px*fx))+'주':'', r=price/l.px-1;
+    return `<tr><td class="i">${i+1}</td><td>${l.d.slice(5)}</td><td class="h">${h}${nowLot?'<b>지금 사는 몫</b>':''}</td><td class="n">$${fmt(l.px)}</td>${lotAmt?`<td class="n">${sh}</td>`:''}<td class="n ${r>=0?'up':'dn'}">${pct(r)}</td><td class="ok" title="체결(추정)">✓</td></tr>`});
+  if(P.buy&&now<D.close_ts&&n<4){
+    const sh=lotAmt?Math.floor(lotAmt/(P.buy*fx))+'주':'';
+    rows.push(`<tr class="pend"><td class="i">${n+1}</td><td>${D.session.slice(5)} 밤</td><td class="h">${P.how}</td><td class="n">$${fmt(P.buy)}</td>${lotAmt?`<td class="n">${sh}</td>`:''}<td class="n">–</td><td title="대기">…</td></tr>`);
+  }
+  $('stLots').innerHTML=rows.length?`<table class="lott"><thead><tr><th class="i">#</th><th>날짜</th><th>어떻게</th><th class="n">체결가</th>${lotAmt?'<th class="n">주</th>':''}<th class="n">지금</th><th></th></tr></thead><tbody>${rows.join('')}</tbody></table>`:'';
+  const notes=[];
+  if(n)notes.push('규칙대로 샀다고 보고 계산한 보유(체결 추정)입니다.'+(P.buy&&now<D.close_ts&&n<4&&P.ntgt?` 오늘 밤 매수까지 체결되면 평균 $${fmt(P.navg)} · 매도선 $${fmt(P.ntgt)}로 바뀝니다.`:''));
+  if(m.avg>0&&m.qty>0){const p=position(inst,I);notes.push(`내 실제 보유 입력값 우선: 평균 $${fmt(p.avg)} · ${p.qty}주 → 매도선 $${fmt(p.tgt)}.`)}
+  else if(n)notes.push("실제 체결가가 다르면 아래 '내 실제 보유'에 넣으면 매도선이 다시 계산됩니다.");
+  if(!lotAmt&&n)notes.push("'이 상품에 쓰는 돈'을 넣으면 금액과 주수도 보입니다.");
+  const o=inst==='QLD'?'TQQQ':'QLD',OI=D.inst[o];
+  if(OI)notes.push(`${o}: ${stState(o)[0]}`+(OI.lots.length?` · 평균 $${fmt(OI.plan.avg)} · 매도선 $${fmt(OI.plan.tgt)}`:''));
+  $('stNote').textContent=notes.join(' ');
 }
 
 function drawChart(){
