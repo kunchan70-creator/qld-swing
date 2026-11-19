@@ -123,7 +123,7 @@ a{color:var(--sell)}
     <div class="note" id="ruleLots"></div>
   </div>
 
-  <div class="note">규칙: 어제 마감 공포(공포탐욕 30↓ 또는 VIX 30↑) + QQQ 1년 고점 대비 −10~−20% → RSI 30 가격 지정가(이미 30↓면 마감 두 묶음 + 어제 종가 지정가) · 공포 미확정이면 RSI 26 가격 · QQQ 하루 −2.5% & 5일 −7.5% 마감이면 한 묶음(QLD·TQQQ) · 평균 단가 +5%(QLD) / +7.5%(TQQQ) 전량 매도(첫 묶음보다 비싸게 산 묶음이 있으면 그중 가장 비싼 값 기준) · 첫 매수 10거래일째 마감 정리.
+  <div class="note">규칙: 어제 마감 공포(공포탐욕 30↓ 또는 VIX 30↑) + QQQ 1년 고점 대비 −10~−25% → RSI 30 가격 지정가(이미 30↓면 마감 두 묶음 + 어제 종가 지정가) · 공포 미확정이면 RSI 26 가격 · QQQ 하루 −2.5% & 5일 −7.5% 마감이면 한 묶음(QLD·TQQQ) · 평균 단가 +5%(QLD) / +7.5%(TQQQ) 전량 매도(첫 묶음보다 비싸게 산 묶음이 있으면 그중 가장 비싼 값 기준) · 첫 매수 10거래일째 마감 정리.
   자세한 근거: <a href="https://claude.ai/artifact/V6shjRDDuvreVmJ6NeRZbu" target="_blank" rel="noopener">교본</a> · 과거 시험일 뿐 앞으로를 보장하지 않습니다. <button class="btn" id="reload" type="button">새로고침</button></div>
 </div>
 
@@ -203,8 +203,9 @@ function decide(s){
   // 4-2) 4묶음 다 찬 뒤 오는 신호: 규칙상은 안 사지만 표시(2026-11-18 사용자)
   if((P.full_buy||P.full_close)&&now<D.close_ts){
     const line=P.full_close&&ph!=='regular'?P.full_close:(P.full_buy||P.full_close), under=price<=line;
-    var fullAct=({k:'warn',tag:'4묶음 다 참 · 규칙 밖 신호',title:under?'신호 가격 아래예요 (표시만)':'오늘도 사는 신호가 있어요 (표시만)',price:line,
-      why:`규칙은 4묶음까지라 더 안 삽니다. 여윳돈이 있으면 사도 되는 가격(2000~ 이런 날 17번 모두 3년 뒤 QQQ가 더 높았음). 샀다면 같은 전량 매도에 합쳐 관리.`,
+    const dp=P.full_why==='deep';
+    var fullAct=({k:'warn',tag:dp?'고점 −40% 아래 · 규칙 밖 신호':'4묶음 다 참 · 규칙 밖 신호',title:under?'신호 가격 아래예요 (표시만)':'오늘도 사는 신호가 있어요 (표시만)',price:line,
+      why:dp?`규칙은 −10~−25%에서만 삽니다. ${'2000~ 고점 −40% 아래 신호 회차는 모두 이익(실제 2008-10~2009-02 10번 · 가상 닷컴 2001~02 포함 30번). 단 2001-09처럼 더 빠지면 크게 잃을 수 있어요'}. 샀다면 같은 방식(+목표 전량 매도 · 10거래일 시한)으로 관리.`:`규칙은 4묶음까지라 더 안 삽니다. 여윳돈이 있으면 사도 되는 가격(2000~ 이런 날 17번 모두 3년 뒤 QQQ가 더 높았음). 샀다면 같은 전량 매도에 합쳐 관리.`,
       gauge:{price,line,lab:'신호 가격'},prio:under});
   }
   // 5) 보유 유지
@@ -214,7 +215,7 @@ function decide(s){
   if(!acts.length&&!stale){
     const need=[];
     if(!S.fear)need.push('어제 마감 공포(공포탐욕 30↓ 또는 VIX 30↑)');
-    if(!S.deep)need.push(`QQQ가 1년 고점 대비 −10~−20% (지금 ${pct(S.dd)})`);
+    if(!S.deep)need.push(`QQQ가 1년 고점 대비 −10~−25% (지금 ${pct(S.dd)}${S.dd<=-0.40?' · −40% 아래라 신호만 표시':S.dd<-0.25?' · −25~−40%는 진짜 패닉 구간이라 안 삼':''})`);
     acts.push({k:'wait',tag:'할 일 없음',title:'오늘은 사지 않습니다',price:null,why:need.length?'아직 안 맞은 조건: '+need.join(' · '):'조건 대기 중'});
   }
   if(stale)acts.unshift({k:'warn',tag:'새 주문표 계산 중',title:'마감 확정 후 새 주문표가 곧 올라와요',price:null,why:'미국 장 마감 20분 뒤(한국 겨울 06:20 · 여름 05:20쯤) 다음 장 주문이 정해집니다. 그 전엔 어제 주문표 기준이에요.'});
@@ -245,8 +246,9 @@ function render(){
   if(I.after_cap)tk.push({k:'b',t:`${I.after_kind} (애프터마켓 · 주간 · 프리마켓)`,s:`어제 종가 +0.5%까지 · 이미 샀으면 건너뛰기`,p:I.after_cap,ps:'까지 지정가'});
   if(P.buy)tk.push({k:'b',t:`매수 지정가 · ${P.how}`,s:`계좌 ${I.size*100}% 한 묶음${lotInfo(inst,I,P.buy)}`,p:P.buy,ps:'지정가',done:false});
   if(pos)tk.push({k:'s',t:'보유 전량 매도 지정가',s:`${base(pos,I.tp)} · ${pos.src==='mine'?'내 평균 기준':'규칙 추정 '+pos.n+'묶음'}`,p:pos.tgt,ps:'지정가'});
-  if(P.full_buy)tk.push({k:'w',t:`신호만 · 4묶음 다 참 (${P.full_how})`,s:'규칙상 더 안 삼 · 여윳돈이면 사도 되는 가격',p:P.full_buy,ps:'표시만',lab:'신호'});
-  if(P.full_close)tk.push({k:'w',t:'신호만 · 4묶음 다 참 (아침 애프터마켓)',s:'어제 종가 +0.5%까지 · 규칙상 더 안 삼',p:P.full_close,ps:'표시만',lab:'신호'});
+  const fw=P.full_why==='deep'?'고점 −40% 아래':'4묶음 다 참';
+  if(P.full_buy)tk.push({k:'w',t:`신호만 · ${fw} (${P.full_how})`,s:P.full_why==='deep'?'규칙 밖 · 지난 깊은 폭락에선 다 이겼지만 표본 적음':'규칙상 더 안 삼 · 여윳돈이면 사도 되는 가격',p:P.full_buy,ps:'표시만',lab:'신호'});
+  if(P.full_close)tk.push({k:'w',t:`신호만 · ${fw} (아침 애프터마켓)`,s:'어제 종가 +0.5%까지 · 규칙상 더 안 삼',p:P.full_close,ps:'표시만',lab:'신호'});
   if(P.buy&&P.ntgt)tk.push({k:'s',t:'매수 체결되면 매도가 고치기',s:P.last?'시한 날이라 새로 산 수량만':'보유 전량 · 다음 장 전까지',p:P.ntgt,ps:'로 변경'});
   if(pos&&pos.last)tk.push({k:'w',t:'시한 정리 (장마감 시장가 MOC)',s:'매도가에 안 팔리면 오늘 마감에 들고 있던 수량 전부',p:null,ps:'MOC'});
   $('tickets').innerHTML=tk.length?tk.map(x=>`<div class="tk ${x.done?'done':''}"><span class="k ${x.k}">${x.lab||(x.k==='b'?'매수':x.k==='s'?'매도':'정리')}</span><span class="t">${x.t}<small>${x.s}</small></span><span class="p">${x.p!=null?'$'+fmt(x.p):''}<small>${x.ps}</small></span></div>`).join('')
@@ -254,7 +256,7 @@ function render(){
   // 조건
   const S=D.signal,y=(b)=>`<span class="ic ${b?'y':'n'}">${b?'✓':'–'}</span>`;
   const ck=[[S.fear,'공포',`공포탐욕 ${S.fg!=null?fmt(S.fg,0):'?'} · VIX ${fmt(S.vix,1)} (공포탐욕 30 이하 또는 VIX 30 이상이면 켜짐)`],
-    [S.deep,'하락률 구간',`QQQ 1년 고점 $${fmt(S.hi)} 대비 ${pct(S.dd)} (−10~−20%일 때만 삼)`],
+    [S.deep,'하락률 구간',`QQQ 1년 고점 $${fmt(S.hi)} 대비 ${pct(S.dd)} (−10~−25%일 때만 삼 · −40% 아래는 표시만)`],
     [S.rsi<30,'RSI 30 아래 마감',`RSI ${fmt(S.rsi,1)} → ${S.rsi<30?'마감 두 묶음 + 어제 종가 지정가':`오늘 밤 QQQ RSI ${S.soft?'26':'30'} 가격 $${fmt(S.soft?S.L26:S.L)}에 지정가`}`]];
   ck.push([S.crash,'급락 마감',`어제 QQQ 하루 ${pct(S.d1)} · 5일 ${pct(S.d5)} (하루 −2.5% & 5일 −7.5%면 한 묶음). 오늘 밤 QQQ $${fmt(S.xline)} 이하 마감이면 내일 아침 한 묶음`]);
   $('checks').innerHTML=ck.map(([b,t,s])=>`<div class="ck">${y(b)}<div><b>${t}</b><span>${s}</span></div></div>`).join('');
@@ -284,7 +286,7 @@ function drawChart(){
   const add=(price,color,title,style=2)=>{if(price==null)return;LV.push(price);lines.push(series.createPriceLine({price,color,lineWidth:2,lineStyle:style,axisLabelVisible:true,title}));leg.push(`<span><i style="border-color:${color}"></i>${title} $${fmt(price)}</span>`)};
   if(now<D.close_ts){
     if(P.buy)add(P.buy,css('--buy'),'매수선');
-    if(P.full_buy)add(P.full_buy,css('--mute'),'신호(4묶음 참)',3);
+    if(P.full_buy)add(P.full_buy,css('--mute'),P.full_why==='deep'?'신호(−40% 아래)':'신호(4묶음 참)',3);
     if(I.after_cap)add(I.after_cap,css('--warn'),'사는 상한');
   }
   if(pos){add(pos.tgt,css('--sell'),'매도선');add(pos.avg,css('--mute'),'평균 단가',1)}
