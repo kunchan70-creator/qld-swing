@@ -169,12 +169,13 @@ a{color:var(--sell)}
   <div class="card">
     <h3>내 실제 보유 (이 브라우저에만 저장)</h3>
     <div class="mine">
-      <label>평균 단가 ($)<input id="myAvg" inputmode="decimal" placeholder="예: 71.89"></label>
-      <label>보유 수량 (주)<input id="myQty" inputmode="numeric" placeholder="예: 150"></label>
-      <label class="full">첫 묶음보다 비싸게 산 묶음 중 가장 비싼 체결가 ($) · 없으면 비움<input id="myTop" inputmode="decimal" placeholder="예: 74.20 → 매도선 = 이 값 +목표%"></label>
+      <label>내 평균 단가 ($)<input id="myAvg" inputmode="decimal" placeholder="예: 48.00"></label>
+      <label>산 묶음 수 (0~4)<input id="myLots" inputmode="numeric" placeholder="예: 1"></label>
+      <label class="full">보유 수량 (주) · 선택<input id="myQty" inputmode="numeric" placeholder="예: 150"></label>
+      <input id="myTop" type="hidden">
       <label class="full">이 상품에 쓰는 돈 (원)<input id="myCash" inputmode="numeric" placeholder="예: 100000000 → 한 묶음 금액·주수 계산"></label>
     </div>
-    <div class="note">비워 두면 규칙대로 샀다고 보고 추정합니다. 다 팔았으면 지우세요. <button class="btn" id="clearMine" type="button">지우기</button></div>
+    <div class="note">평균 단가와 산 묶음 수만 넣으면 '지금 상황' 풀이가 내 기준으로 바뀝니다. <b>매도선은 늘 규칙 매도선</b>이라(규칙보다 싸게 샀으면 팔리는 때는 같고 더 법니다) 내 평균 단가는 내 수익 계산에만 씁니다. 다 팔았으면 지우세요. <button class="btn" id="clearMine" type="button">지우기</button></div>
     <div class="note" id="ruleLots"></div>
   </div>
 
@@ -218,10 +219,11 @@ function phase(now){
 function base(pos,tp){return pos.top?`첫 묶음보다 위에서 산 가장 비싼 $${fmt(pos.top)} +${+(tp*100).toFixed(1)}% (평균 $${fmt(pos.avg)})`:`평균 $${fmt(pos.avg)} +${+(tp*100).toFixed(1)}%`}
 function mine(s){const m=store.get('mine_'+s)||{};return m}
 function position(s,I){
-  const m=mine(s);
-  // 매도선(2026-11-19): 첫 묶음보다 비싸게 산 묶음이 있으면 그중 가장 비싼 값 +목표%, 없으면 평균 +목표%
-  if(m.avg>0&&m.qty>0){const top=m.top>m.avg?+m.top:null;return{src:'mine',avg:+m.avg,qty:+m.qty,top,tgt:+((top||m.avg)*(1+I.tp)).toFixed(2),n:null,due:I.plan.due,last:I.plan.last}}
-  if(I.plan.hold>0)return{src:'rule',avg:I.plan.avg,top:I.plan.top||null,tgt:I.plan.tgt,n:I.plan.hold,due:I.plan.due,last:I.plan.last};
+  const m=mine(s),my=m.avg>0?{avg:+m.avg,lots:m.lots!=null?+m.lots:null,qty:+m.qty||null}:null;
+  // 2026-11-20 사용자: 매도선은 늘 규칙 매도선(규칙이 산 걸로 친 묶음 기준). 규칙보다 싸게 샀으면 팔리는 때는 시험과 같고 그만큼 더 법니다.
+  // 내 평균 단가(my)는 내 수익 계산에만. 규칙 보유가 없을 때만 내 평균 +목표%를 씀.
+  if(I.plan.hold>0)return{src:'rule',avg:I.plan.avg,top:I.plan.top||null,tgt:I.plan.tgt,n:I.plan.hold,due:I.plan.due,last:I.plan.last,my};
+  if(my)return{src:'mine',avg:my.avg,qty:my.qty,top:null,tgt:+(my.avg*(1+I.tp)).toFixed(2),n:my.lots,due:I.plan.due,last:I.plan.last,my};
   return null;
 }
 function lotInfo(s,I,px){const m=mine(s);if(!(m.cash>0)||!px)return'';const amt=m.cash*I.size;return ` · 한 묶음 ${Math.round(amt/10000).toLocaleString()}만 원 ≈ ${Math.floor(amt/(px*(D.fx||1450)))}주`}
@@ -300,7 +302,7 @@ function render(){
   const tk=[],P=I.plan,pos=position(inst,I);
   if(I.after_cap)tk.push({k:'b',t:`${I.after_kind} (애프터마켓 · 주간 · 프리마켓)`,s:`어제 종가 +0.5%까지 · 이미 샀으면 건너뛰기`,p:I.after_cap,ps:'까지 지정가'});
   if(P.buy)tk.push({k:'b',t:`매수 지정가 · ${P.how}`,s:`이 값 이하면 삼 · 더 싸게 열리면 그 값에 체결 · 계좌 ${I.size*100}% 한 묶음${lotInfo(inst,I,P.buy)}`,p:P.buy,ps:'이하 지정가',done:false});
-  if(pos)tk.push({k:'s',t:'보유 전량 매도 지정가',s:`${base(pos,I.tp)} · ${pos.src==='mine'?'내 평균 기준':'규칙 추정 '+pos.n+'묶음'}`,p:pos.tgt,ps:'지정가'});
+  if(pos)tk.push({k:'s',t:'보유 전량 매도 지정가',s:`${base(pos,I.tp)} · ${pos.src==='mine'?'내 평균 기준':'규칙 매도선'+(pos.my?` · 내 평단 $${fmt(pos.my.avg)}면 ${pct(pos.tgt/pos.my.avg-1)}`:'')}`,p:pos.tgt,ps:'지정가'});
   const fw=P.full_why==='deep'?'고점 −40% 아래':'4묶음 다 참';
   if(P.full_buy)tk.push({k:'w',t:`신호만 · ${fw} (${P.full_how})`,s:P.full_why==='deep'?'규칙 밖 · 지난 깊은 폭락에선 다 이겼지만 표본 적음':'규칙상 더 안 삼 · 여윳돈이면 사도 되는 가격',p:P.full_buy,ps:'표시만',lab:'신호'});
   if(P.full_close)tk.push({k:'w',t:`신호만 · ${fw} (아침 애프터마켓)`,s:'어제 종가 +0.5%까지 · 규칙상 더 안 삼',p:P.full_close,ps:'표시만',lab:'신호'});
@@ -317,75 +319,72 @@ function render(){
   $('checks').innerHTML=ck.map(([b,t,s])=>`<div class="ck">${y(b)}<div><b>${t}</b><span>${s}</span></div></div>`).join('');
   const q=D.qqq.live,ql=S.soft?S.L26:S.L;
   $('qqqRow').innerHTML=`<span>QQQ 지금 <b>$${fmt(q.price)}</b></span><span>${S.soft?'RSI 26':'RSI 30'} 가격 <b>$${fmt(ql)}</b> (${pct(ql/q.price-1)})</span>`+`<span>급락 마감 기준 <b>$${fmt(S.xline)}</b></span>`;
-  const m=mine(inst);$('myAvg').value=m.avg||'';$('myQty').value=m.qty||'';$('myCash').value=m.cash||'';$('myTop').value=m.top||'';
+  const m=mine(inst);$('myAvg').value=m.avg||'';$('myQty').value=m.qty||'';$('myCash').value=m.cash||'';$('myLots').value=m.lots!=null?m.lots:'';
   $('ruleLots').textContent=I.lots.length?`규칙 추정 보유: `+I.lots.map(l=>`${l.d.slice(5)} $${fmt(l.px)} (${l.how})`).join(' · '):'규칙 추정 보유 없음';
   renderStatus();
   renderEasy();
   drawChart();
 }
 
-// 2026-11-20 사용자: 겁나는 사람이 보는 판. 지금 위치가 과거 회차의 어느 갈래인지 → 여기까지 온 회차는 그 뒤 어떻게 됐는지 → 어디에 걸지.
-// 회차 = 첫 묶음부터 전량 매도까지(실제 가격). ROUNDS[i] = [시작일, 팔기 전 최대 하락 %(첫 묶음 대비), 매도가/첫 묶음 가격, 회차 결과 %, 걸린 거래일, 묶음 수]. scratchpad rounds_data.py
+// 2026-11-20 사용자: 겁나는 사람이 보는 판 + 내 포지션 기준. 지금 위치가 과거 회차의 어느 갈래인지 → 여기까지 온 회차는 그 뒤 어떻게 됐는지
+// → 내 평단·산 묶음 수 기준으로 남은 묶음을 어떻게 걸었으면 과거엔 어땠는지(매도선은 늘 규칙 매도선).
+// ROUNDS[i] = [시작일, 팔기 전 최대 하락 %(첫 묶음 대비), 매도가/첫 묶음 가격, 회차 결과 %, 걸린 거래일, 묶음 수]. 실제 가격. scratchpad rounds_data.py
 const ROUNDS={"TQQQ":{"cost":0.0017,"rows":[["2010-05-07",0,1.1262,12.5,1,2],["2010-05-20",-8.9,1.0573,7.3,4,4],["2010-05-26",0,1.0552,7.3,1,3],["2010-06-29",-16.0,1.0287,7.3,8,4],["2010-08-24",-6.1,1.075,7.3,7,1],["2011-08-08",0,1.075,7.3,1,2],["2011-08-09",0,1.075,7.3,1,1],["2011-08-10",0,1.0383,7.3,1,3],["2011-08-19",-1.8,1.0611,7.3,2,3],["2011-10-03",-10.9,1.0246,7.3,2,4],["2011-11-23",-2.3,1.0659,7.3,2,4],["2012-05-18",0,1.075,7.3,1,2],["2012-06-01",-1.8,1.075,7.3,3,3],["2012-11-15",-3.5,1.0871,8.2,3,4],["2015-08-21",-29.0,0.9864,7.3,2,4],["2015-08-25",0,1.0711,7.9,1,3],["2015-09-28",-3.7,1.071,7.3,4,4],["2016-01-13",0,1.075,7.3,1,2],["2016-01-14",-13.8,1.048,7.3,5,4],["2016-02-05",-11.0,1.0753,9.7,7,4],["2018-02-08",-6.8,1.0828,8.1,2,3],["2018-10-10",-7.1,1.075,7.3,4,1],["2018-10-24",0,1.075,7.3,1,2],["2018-10-29",-2.2,1.0996,10.2,2,2],["2018-11-20",0,1.0925,7.9,4,3],["2018-12-17",-23.6,0.9471,-4.0,10,4],["2019-06-03",0,1.075,7.3,1,2],["2020-02-25",-23.2,0.9337,7.3,4,4],["2020-03-02",0,1.1477,14.6,1,1],["2020-03-09",0,1.1048,10.7,1,3],["2020-03-10",0,1.075,7.3,1,1],["2020-03-11",-28.0,0.8901,7.3,2,3],["2020-03-16",0,1.0738,7.3,1,2],["2020-03-18",0,1.075,7.3,1,1],["2020-03-20",-9.1,1.1611,15.9,2,1],["2020-09-08",0,1.075,7.3,1,2],["2020-10-28",0,1.075,7.3,1,2],["2020-11-02",0,1.075,7.3,1,1],["2022-01-21",-15.0,1.0906,9.9,6,4],["2022-02-22",-15.5,1.0771,10.9,3,4],["2022-03-07",0,1.0634,7.3,1,4],["2022-03-08",0,1.0776,7.6,1,2],["2022-04-26",-8.5,1.0223,7.3,2,4],["2022-05-02",0,1.075,7.3,1,1],["2022-05-09",-16.0,1.0216,7.3,6,2],["2022-06-13",-2.4,1.075,7.3,2,1],["2022-06-16",-1.0,1.0897,8.8,2,1],["2023-03-13",0,1.0916,9.0,1,1],["2023-10-26",0,1.0903,8.1,4,4],["2024-08-05",0,1.1685,10.4,1,3],["2024-08-06",-1.2,1.1019,8.0,3,4],["2025-03-10",-4.6,1.07,7.3,5,4],["2025-03-31",0,1.075,7.3,1,1],["2025-04-01",0,1.075,7.3,1,1],["2025-04-03",-33.2,1.0178,7.3,4,4],["2026-03-27",-3.8,1.0687,7.3,2,4],["2026-07-29",0,1.075,7.3,1,2],["2026-11-02",0,1.075,7.3,2,2],["2026-11-05",0,1.1129,9.2,2,4]]},"QLD":{"cost":0.0017,"rows":[["2007-11-09",-5.4,1.0126,4.8,2,3],["2008-01-08",-2.3,1.05,4.8,2,1],["2008-01-11",0,1.05,4.8,1,1],["2008-01-22",-11.0,1.0255,4.8,2,3],["2008-09-15",-13.7,1.054,6.9,4,4],["2008-10-02",0,1.05,4.8,1,1],["2008-10-06",-28.1,0.9411,4.8,5,3],["2008-10-24",-7.8,1.0184,4.8,2,2],["2008-11-12",0,1.05,4.8,1,1],["2008-11-20",0,1.05,4.8,1,1],["2009-02-23",0,1.05,4.8,1,1],["2010-05-07",0,1.0848,8.3,1,2],["2010-05-20",-4.0,1.0381,4.8,2,3],["2010-05-24",-6.6,1.0363,4.8,2,4],["2010-05-26",0,1.0346,4.8,1,3],["2010-06-29",-10.8,1.0192,4.8,8,4],["2010-08-24",-3.9,1.05,4.8,7,1],["2011-08-08",0,1.05,4.8,1,2],["2011-08-09",0,1.05,4.8,1,1],["2011-08-10",0,1.0244,4.8,1,3],["2011-08-19",-1.1,1.0417,4.8,2,3],["2011-10-03",-7.4,1.0171,4.8,2,4],["2011-11-23",-1.4,1.0443,4.8,2,4],["2012-05-18",0,1.05,4.8,1,2],["2012-06-01",-1.2,1.05,4.8,3,3],["2012-11-15",-2.3,1.0589,5.5,3,4],["2015-08-21",0,0.9871,4.8,1,3],["2015-08-24",0,1.0697,6.8,1,2],["2015-08-25",0,1.0452,5.2,1,3],["2015-09-28",-2.5,1.0474,4.8,4,4],["2016-01-13",0,1.05,4.8,1,2],["2016-01-14",-9.2,1.0322,4.8,5,4],["2016-02-05",-7.4,1.0497,6.4,7,4],["2018-02-08",-4.4,1.0544,5.3,2,3],["2018-10-10",-4.7,1.05,4.8,4,1],["2018-10-24",0,1.05,4.8,1,2],["2018-10-29",-1.7,1.0641,6.6,2,2],["2018-11-20",0,1.0619,5.2,4,3],["2018-12-17",-16.1,0.9714,-2.2,10,4],["2019-06-03",0,1.05,4.8,1,2],["2020-02-25",-15.8,0.9584,4.8,4,4],["2020-03-02",0,1.1013,10.0,1,1],["2020-03-09",0,1.0768,7.4,1,3],["2020-03-10",0,1.0552,5.3,1,1],["2020-03-11",-18.7,0.9314,4.8,2,3],["2020-03-16",0,1.0404,4.8,1,2],["2020-03-18",0,1.05,4.8,1,1],["2020-03-20",-6.3,1.1093,10.8,2,1],["2020-09-08",0,1.05,4.8,1,2],["2020-10-28",0,1.05,4.8,1,2],["2020-11-02",0,1.05,4.8,1,1],["2022-01-21",-9.9,1.0627,6.7,6,4],["2022-02-22",-10.4,1.0516,7.1,3,4],["2022-03-07",0,1.0428,4.8,1,4],["2022-03-08",0,1.0527,5.1,1,2],["2022-04-26",-5.6,1.0149,4.8,2,4],["2022-05-02",0,1.0527,5.1,1,1],["2022-05-09",-10.6,1.0185,5.0,6,2],["2022-06-13",-1.5,1.05,4.8,2,1],["2022-06-16",-0.8,1.057,5.5,2,1],["2023-03-13",0,1.0612,5.9,1,1],["2023-10-26",0,1.0601,5.3,4,4],["2024-08-05",0,1.1085,6.8,1,3],["2024-08-06",-0.7,1.0682,5.3,3,4],["2025-03-10",-3.0,1.0468,4.8,5,4],["2025-03-31",0,1.05,4.8,1,1],["2025-04-01",0,1.05,4.8,1,1],["2025-04-03",-22.9,1.0141,4.8,4,4],["2026-03-27",-2.5,1.0459,4.8,2,4],["2026-07-29",0,1.05,4.8,1,2],["2026-11-02",0,1.05,4.8,2,2],["2026-11-05",0,1.05,4.8,1,2],["2026-11-06",0,1.05,4.8,1,2]]}};
 function renderEasy(){
-  const I=D.inst[inst],lots=I.lots,price=I.live.price,T=ROUNDS[inst],box=$('ezCard');
+  const I=D.inst[inst],lots=I.lots,P=I.plan,price=I.live.price,T=ROUNDS[inst],box=$('ezCard');
   if(!lots.length||!T||!price){box.hidden=true;return}
   box.hidden=false;
   const R=T.rows,N=R.length,C=T.cost,p0=lots[0].px,dd=(price/p0-1)*100,B=Math.min(0,Math.ceil(dd)),m=mine(inst),amt=m.cash>0?m.cash*I.size:1e6;
+  const myOn=m.avg>0&&m.lots!=null,held=myOn?m.lots:lots.length,rem=Math.max(0,4-held);
   const since=R[0][0].slice(0,4),pc=(a,b)=>Math.round(a/b*100)+'%',px=t=>'$'+fmt(p0*(1+t/100));
   const won=x=>{const v=amt*x/100/1e4;return (v>=0?'+':'−')+(Math.abs(v)<100?Math.abs(v).toFixed(1):Math.round(Math.abs(v)).toLocaleString())+'만 원'};
   const row=(label,n,tot,cls='',chip='')=>`<div class="pr ${cls}"><div class="l">${label}${chip?`<span class="chip">${chip}</span>`:''}</div><div class="c">${n}번<small>${pc(n,tot)}</small></div><div class="bar"><i style="width:${Math.max(2,n/tot*100)}%"></i></div></div>`;
   $('ezTitle').textContent=`지금 상황, 쉽게 · ${inst}`;
   let h=`<div class="lead">지금 $${fmt(price)} · 규칙상 첫 묶음($${fmt(p0)})보다 <em>${dd<0?(-dd).toFixed(1)+'% 아래':(dd).toFixed(1)+'% 위'}</em>예요.</div><!--ADV-->`;
-  // ① 갈래: 첫 묶음 산 뒤 과거 N번은 어떻게 갈렸나
+  // ① 갈래
   const g1=R.filter(r=>r[1]>-2),deep=B<=-3?B:-5,g3=R.filter(r=>r[1]<=deep),g2=N-g1.length-g3.length,q=g1.filter(r=>r[4]<=1).length;
   const at=B>-2?1:B>deep?2:3;
   h+=`<div class="sec"><h4>첫 묶음을 산 뒤, 과거 ${N}번은 이렇게 갈렸어요 <small style="color:var(--mute);font-weight:400">(${since}년~)</small></h4>`
     +row(`바로 올라가서 팔림 <small>(2%도 안 빠짐 · ${q}번은 하루 안에)</small>`,g1.length,N,at===1?'here':'up',at===1?'지금 여기':'')
     +row(`조금 빠졌다가 올라감 <small>(2~${-deep}% 빠짐)</small>`,g2,N,at===2?'here':'',at===2?'지금 여기':'')
     +row(`${-deep}% 넘게 빠짐 <small>(${px(deep)} 아래)</small>`,g3.length,N,at===3?'here':'',at===3?'지금 여기':'')+`</div>`;
+  // 내 포지션 한 줄(매도선은 규칙)
+  const mine1=myOn?`<b>내 포지션: ${held}묶음 · 평단 $${fmt(m.avg)}.</b> 규칙 매도선 $${fmt(P.tgt)}에 팔면 <b>${pct(P.tgt/m.avg-1)}</b>(규칙대로 산 경우 +${+(I.tp*100).toFixed(1)}%)${P.ntgt&&P.buy&&held<4?`. 오늘 밤 규칙 묶음이 체결되면 매도선이 내려가요($${fmt(P.buy)}에 사면 $${fmt(P.ntgt)}, 더 싸게 열리면 더 낮게 · 판이 다시 계산)`:''}. `:'';
+  let adv;
   if(B>-2){
-    h+=`<div class="verdict">아직 첫 묶음 가격 근처예요. 과거엔 <b>${N}번 중 ${g1.length}번(${pc(g1.length,N)})</b>이 여기서 더 안 빠지고 바로 팔렸어요.</div>`;
-  } else {
-    // ② 지금처럼 빠진 회차는 그 뒤 어떻게 됐나
-    const H=R.filter(r=>r[1]<=B),n=H.length,lv=[B-3,B-5,B-10,B-15,B-20].filter((t,i,a)=>i===0||H.some(r=>r[1]<=a[i-1]));
-    const bounce=H.filter(r=>r[1]>B-3).length,win=H.filter(r=>r[3]>0),lose=H.filter(r=>r[3]<=0);
-    const days=H.map(r=>r[4]).sort((a,b)=>a-b),med=days[Math.floor((days.length-1)/2)];
-    h+=`<div class="sec"><h4>지금처럼 ${-B}% 넘게 빠졌던 ${n}번은 그 뒤에</h4>`
-      +row(`여기서 바로 올라감 <small>(3% 더 안 빠짐)</small>`,bounce,n,'up')
-      +lv.map(t=>row(`첫 묶음 −${-t}%까지 내려감 <small>(${px(t)})</small>`,H.filter(r=>r[1]<=t).length,n)).join('')
-      +`<div class="verdict">그래도 결국 <b>${n}번 중 ${win.length}번은 이익으로 끝났어요</b>(팔릴 때까지 보통 ${med}거래일).`
-      +(lose.length?` 진 ${lose.length}번: ${lose.map(r=>`${r[0].slice(0,7)} 회차 ${r[3]}%`).join(', ')}.`:'')+`</div></div>`;
-    // ③ 그래서 어디에 걸까: 다음 한 묶음을 지금/더 아래에 샀다면(못 산 회차 0원), 파는 값은 규칙 매도선
-    const opts=[B,B-3,B-6].map(t=>{const f=H.filter(r=>r[1]<=t),rets=f.map(r=>r[2]/(1+t/100)-1-C);
-      return {t,fill:f.length,loss:rets.filter(x=>x<0).length,exp:rets.reduce((a,b)=>a+b,0)/n*100,avg:rets.length?rets.reduce((a,b)=>a+b,0)/rets.length*100:0}});
-    const best=Math.max(...opts.map(o=>o.exp)),lab=['지금 근처에서 사기','조금 더 아래에 걸기','많이 아래에 걸기'];
-    const dots=o=>{let d='';for(let i=0;i<n;i++)d+=i<o.fill-o.loss?'<i></i>':i<o.fill?'<i class="l"></i>':'<i class="m"></i>';return `<div class="dots" aria-hidden="true">${d}</div>`};
-    h+=`<div class="sec"><h4>다음 한 묶음(${Math.round(amt/1e4).toLocaleString()}만 원), 어디에 걸까</h4>`
-      +opts.map((o,k)=>`<div class="opt${o.exp===best?' best':''}"><div class="t">${lab[k]} · ${px(o.t)}<small>${o.fill===n?`${n}번 다 삼`:`${n}번 중 ${o.fill}번 삼 · ${n-o.fill}번 못 삼`} · 손해 ${o.loss}번</small></div><div class="v">${won(o.exp)}<small>평균</small></div>${dots(o)}</div>`).join('')
-      +`<div class="dkey"><span><i></i>이익</span><span><i class="l"></i>손해</span><span><i class="m"></i>안 내려와서 못 삼(0원)</span></div></div>`;
-  }
-  // 2026-11-20 사용자: 상황을 이해시키는 풀이 문장(지금 어느 갈래 → 과거엔 어땠나 → 남은 묶음은 어떻게 걸면 어땠나). 과거 숫자만 말함
-  const rem=Math.max(0,4-lots.length);let adv;
-  if(B>-2){
-    adv=`지금은 첫 묶음 가격 근처예요. 과거 ${N}번 중 <b>${g1.length}번(${pc(g1.length,N)})은 여기서 더 안 빠지고 바로 올라가 팔렸어요.</b> 걸어 둔 매도 주문을 그대로 두고 기다리는 자리예요.`;
+    adv=mine1+`지금은 첫 묶음 가격 근처예요. 과거 ${N}번 중 <b>${g1.length}번(${pc(g1.length,N)})은 여기서 더 안 빠지고 바로 올라가 팔렸어요.</b>`+(rem?` 남은 ${rem}묶음은 규칙 주문대로 걸어 두는 자리예요.`:' 매도선까지 기다리는 자리예요.');
   } else {
     const H=R.filter(r=>r[1]<=B),n=H.length,w=H.filter(r=>r[3]>0).length,d3=H.filter(r=>r[1]<=B-3).length;
+    const lv=[B-3,B-5,B-10,B-15,B-20].filter((t,i,a)=>i===0||H.some(r=>r[1]<=a[i-1]));
+    const days=H.map(r=>r[4]).sort((a,b)=>a-b),med=days[Math.floor((days.length-1)/2)],lose=H.filter(r=>r[3]<=0);
+    // ② 지금처럼 빠진 회차는 그 뒤에
+    h+=`<div class="sec"><h4>지금처럼 ${-B}% 넘게 빠졌던 ${n}번은 그 뒤에</h4>`
+      +row(`여기서 바로 올라감 <small>(3% 더 안 빠짐)</small>`,H.filter(r=>r[1]>B-3).length,n,'up')
+      +lv.map(t=>row(`첫 묶음 −${-t}%까지 내려감 <small>(${px(t)})</small>`,H.filter(r=>r[1]<=t).length,n)).join('')
+      +`<div class="verdict">그래도 결국 <b>${n}번 중 ${w}번은 이익으로 끝났어요</b>(팔릴 때까지 보통 ${med}거래일).`
+      +(lose.length?` 진 ${lose.length}번: ${lose.map(r=>`${r[0].slice(0,7)} 회차 ${r[3]}%`).join(', ')}.`:'')+`</div></div>`;
+    // ③ 남은 묶음 걸기 비교(못 산 묶음 0원, 파는 값은 규칙 매도선)
     const lotRet=(r,t)=>r[1]<=t?r[2]/(1+t/100)-1-C:0;
-    const plan=ts=>{const v=H.map(r=>ts.reduce((a,t)=>a+lotRet(r,t),0));return {avg:v.reduce((a,b)=>a+b,0)/n*100,worst:Math.min(...v)*100}};
-    let tail='';
-    if(rem>=2){
-      const lv=[B,B-3,B-10].slice(0,rem),all=plan(Array(rem).fill(B)),spl=plan(lv);
-      tail=` 남은 ${rem}묶음을 <b>지금 다 사면</b> 평균 ${won(all.avg)}, 최악 ${won(all.worst)}이었고, <b>${lv.map(t=>t===B?'지금':`−${-t}%(${px(t)})`).join(' · ')}로 나눠 걸면</b> 평균 ${won(spl.avg)}, 최악 ${won(spl.worst)}이었어요. `+(spl.worst>all.worst+0.5?(spl.avg>=all.avg-0.5?'나눠 걸어도 버는 돈은 비슷했고 <b>물리는 건 크게 줄었어요.</b>':'나눠 걸면 조금 덜 벌고 <b>물리는 건 크게 줄었어요.</b>'):'어느 쪽이든 크게 다르지 않았어요.');
-    } else if(rem===1){
-      const a0=plan([B]),a1=plan([B-3]);
-      tail=` 남은 1묶음은 지금 근처에 사면 평균 ${won(a0.avg)}, −${3-B}%(${px(B-3)})에 걸면 평균 ${won(a1.avg)}이었어요(${n-H.filter(r=>r[1]<=B-3).length}번은 안 내려와 못 삼). `+(Math.abs(a1.avg-a0.avg)<=1?'<b>버는 돈은 거의 같고, 아래에 걸면 덜 물려요.</b>':a1.avg>a0.avg?'<b>조금 아래에 건 쪽이 더 벌었어요.</b>':'<b>지금 사는 쪽이 더 벌었어요.</b>');
-    } else tail=' 규칙상 4묶음을 다 채웠어요. 이제는 매도선까지 기다리는 자리예요.';
-    adv=`지금은 과거 ${N}번 중 <b>${pc(n,N)}만 온 '많이 빠진' 쪽</b>이에요. 이 쪽에선 보통 더 빠졌어요(${n}번 중 ${d3}번이 ${px(B-3)} 아래까지). 그래도 <b>${n}번 중 ${w}번은 결국 이익으로 끝났어요.</b>`+tail;
+    const plan=(name,ts)=>{const v=H.map(r=>ts.reduce((a,t)=>a+lotRet(r,t),0)),f=ts.map(t=>H.filter(r=>r[1]<=t).length);
+      return {name,ts,v,avg:v.reduce((a,b)=>a+b,0)/n*100,worst:Math.min(...v)*100,loss:v.filter(x=>x<0).length,none:v.filter(x=>x===0).length,miss:ts.reduce((a,t)=>a+H.filter(r=>r[1]>t).length,0)}};
+    let plans=[];
+    if(rem===1)plans=[plan('지금 근처에서 사기',[B]),plan('조금 아래에 걸기',[B-3]),plan('많이 아래에 걸기',[B-6])];
+    else if(rem>=2)plans=[plan(`${rem}묶음 지금 다 사기`,Array(rem).fill(B)),plan('조금씩 아래로 나눠 걸기',[B,B-3,B-6].slice(0,rem)),plan('넓게 아래로 나눠 걸기',[B,B-5,B-10].slice(0,rem))];
+    let best=null;
+    if(plans.length){const mx=Math.max(...plans.map(x=>x.avg));best=plans.filter(x=>x.avg>=mx-1).sort((a,b)=>b.worst-a.worst)[0]}
+    const where=x=>x.ts.map(t=>t===B?'지금':px(t)).join(' · ');
+    if(plans.length){
+      const dots=x=>`<div class="dots" aria-hidden="true">${x.v.map(v=>v>0?'<i></i>':v<0?'<i class="l"></i>':'<i class="m"></i>').join('')}</div>`;
+      h+=`<div class="sec"><h4>${myOn?'내 포지션 기준, ':''}남은 ${rem}묶음(묶음당 ${Math.round(amt/1e4).toLocaleString()}만 원) 어떻게 걸까</h4>`
+        +plans.map(x=>`<div class="opt${x===best?' best':''}"><div class="t">${x.name}${x===best?'<span class="chip" style="background:var(--buy)">과거엔 가장 나음</span>':''}<small>${where(x)} · 못 산 묶음 ${x.miss}번 · 손해 ${x.loss}번</small></div><div class="v">${won(x.avg)}<small>평균 · 최악 ${won(x.worst)}</small></div>${dots(x)}</div>`).join('')
+        +`<div class="dkey"><span><i></i>그 회차 이익</span><span><i class="l"></i>손해</span><span><i class="m"></i>하나도 못 삼(0원)</span><span>점 하나 = 지난 회차 하나</span></div></div>`;
+    }
+    adv=mine1+`지금은 과거 ${N}번 중 <b>${pc(n,N)}만 온 '많이 빠진' 쪽</b>이에요. 이 쪽에선 보통 더 빠졌어요(${n}번 중 ${d3}번이 ${px(B-3)} 아래까지). 그래도 <b>${n}번 중 ${w}번은 결국 이익으로 끝났어요.</b>`
+      +(best?` 남은 ${rem}묶음은 <b>${where(best)}</b>${best.ts.length>1?'로 나눠 건':'에 건'} 게 과거엔 가장 나았어요(평균 ${won(best.avg)}, 최악 ${won(best.worst)}).`
+        +(plans[0]!==best?` 지금 다 사면 평균 ${won(plans[0].avg)}, 최악 ${won(plans[0].worst)}이었어요.`:''):' 4묶음을 다 채웠으니 이제는 매도선까지 기다리는 자리예요.');
   }
-  h=h.replace('<!--ADV-->',`<div class="advice"><span class="k">지금 상황 풀이 · 과거엔 이랬어요</span>${adv}</div>`);
-  h+=`<div class="note">${since}년~ 실제 ${inst} 가격 · 수수료 0.17% 뺀 값 · 파는 값은 규칙 매도선 그대로(싸게 사도 매도선을 안 내리면 팔리는 때는 같고 더 법니다) · 회차 수가 적어 대략적인 경향이에요.</div>`;
-  $('ezBody').innerHTML=h;
+  h+=`<div class="note">${since}년~ 실제 ${inst} 가격 · 수수료 0.17% 뺀 값 · 파는 값은 규칙 매도선 그대로 · '과거엔 가장 나음'은 평균이 1만 원 안쪽으로 비슷하면 덜 물린 쪽 · 회차 수가 적어 대략적인 경향이에요.${myOn?'':" 아래 '내 실제 보유'에 평균 단가와 산 묶음 수를 넣으면 내 기준으로 바뀝니다."}</div>`;
+  $('ezBody').innerHTML=h.replace('<!--ADV-->',`<div class="advice"><span class="k">지금 상황 풀이 · 과거엔 이랬어요</span>${adv}</div>`);
 }
 // 2026-11-20 사용자: 판을 열면 지금 상태(매수 중/보유 중) · 몇 묶음 · 평균 단가 · 산 내역이 진짜 산 것처럼 바로 보이게
 const HOW={'마감':'마감 신호 · 애프터','급락':'급락 마감 · 애프터','RSI26':'RSI 26 지정가','지정가':'지정가'};
@@ -421,8 +420,8 @@ function renderStatus(){
   $('stLots').innerHTML=rows.length?`<table class="lott"><thead><tr><th class="i">#</th><th>날짜</th><th>어떻게</th><th class="n">체결가</th>${lotAmt?'<th class="n">주</th>':''}<th class="n">지금</th><th></th></tr></thead><tbody>${rows.join('')}</tbody></table>`:'';
   const notes=[];
   if(n)notes.push('규칙대로 샀다고 보고 계산한 보유(체결 추정)입니다.'+(P.buy&&now<D.close_ts&&n<4&&P.ntgt?` 오늘 밤 매수까지 체결되면 평균 $${fmt(P.navg)} · 매도선 $${fmt(P.ntgt)}로 바뀝니다.`:''));
-  if(m.avg>0&&m.qty>0){const p=position(inst,I);notes.push(`내 실제 보유 입력값 우선: 평균 $${fmt(p.avg)} · ${p.qty}주 → 매도선 $${fmt(p.tgt)}.`)}
-  else if(n)notes.push("규칙보다 싸게 샀다면 매도선은 그대로 두는 게 유리해요(팔리는 때는 같고 더 법니다). '내 실제 보유'에 넣으면 매도선이 내 평균 기준으로 내려가요.");
+  if(m.avg>0&&n){notes.push(`내 실제: ${m.lots!=null?m.lots+'묶음 · ':''}평단 $${fmt(m.avg)} → 규칙 매도선 $${fmt(P.tgt)}에 팔면 ${pct(P.tgt/m.avg-1)} (규칙대로 산 경우 +${+(I.tp*100).toFixed(1)}%).`)}
+  else if(n)notes.push("실제로 산 평균 단가와 묶음 수를 아래 '내 실제 보유'에 넣으면 내 기준 수익과 '지금 상황' 풀이가 나옵니다(매도선은 규칙 그대로).");
   if(!lotAmt&&n)notes.push("'이 상품에 쓰는 돈'을 넣으면 금액과 주수도 보입니다.");
   const o=inst==='QLD'?'TQQQ':'QLD',OI=D.inst[o];
   if(OI)notes.push(`${o}: ${stState(o)[0]}`+(OI.lots.length?` · 평균 $${fmt(OI.plan.avg)} · 매도선 $${fmt(OI.plan.tgt)}`:''));
@@ -462,7 +461,7 @@ function drawChart(){
 
 $('instSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;inst=b.dataset.v;store.set('inst',inst);render()});
 $('rangeSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;range=b.dataset.v;document.querySelectorAll('#rangeSeg button').forEach(x=>x.setAttribute('aria-pressed',x===b));drawChart()});
-['myAvg','myQty','myCash','myTop'].forEach(id=>$(id).addEventListener('change',()=>{store.set('mine_'+inst,{avg:parseFloat($('myAvg').value)||null,top:parseFloat($('myTop').value)||null,qty:parseFloat($('myQty').value)||null,cash:parseFloat(String($('myCash').value).replace(/,/g,''))||null});render()}));
+['myAvg','myLots','myQty','myCash'].forEach(id=>$(id).addEventListener('change',()=>{store.set('mine_'+inst,{avg:parseFloat($('myAvg').value)||null,lots:parseInt($('myLots').value)>=0?Math.min(4,parseInt($('myLots').value)):null,qty:parseFloat($('myQty').value)||null,cash:parseFloat(String($('myCash').value).replace(/,/g,''))||null});render()}));
 $('clearMine').addEventListener('click',()=>{const m=mine(inst);store.set('mine_'+inst,{cash:m.cash||null});render()});
 $('reload').addEventListener('click',load);
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>D&&render());
