@@ -119,6 +119,18 @@ a{color:var(--blue)}
   </div>
 
   <div class="sec">
+    <h2>내가 실제로 산 것 <small>이 기기에만 저장</small></h2>
+    <div class="inp">
+      <label>평균 단가 ($)<input id="myAvg" inputmode="decimal" placeholder="48.00"></label>
+      <label>매수 차수 (0~4차)<input id="myLots" inputmode="numeric" placeholder="1"></label>
+      <label>보유 수량 (주)<input id="myQty" inputmode="numeric" placeholder="선택"></label>
+      <label>투자금 (원)<input id="myCash" inputmode="numeric" placeholder="선택 · 1회 매수 금액 계산"></label>
+    </div>
+    <div class="note">평균 단가와 매수 차수를 넣으면 '내 주식'과 '과거 비슷한 상황'이 내 기준으로 바뀌어요. <b>목표가는 항상 전략 목표가</b>를 써요 — 전략보다 싸게 샀다면 팔리는 때는 같고 그만큼 더 벌어요. 다 팔았으면 지워 주세요.</div>
+    <div style="margin-top:12px"><button class="btn" id="clearMine" type="button">입력 지우기</button></div>
+  </div>
+
+  <div class="sec">
     <h2>걸어 둘 주문 <small id="ordSess"></small></h2>
     <div id="orders"></div>
   </div>
@@ -142,18 +154,6 @@ a{color:var(--blue)}
   <div class="sec">
     <h2>매수 조건 <small id="ckDay"></small></h2>
     <div id="checks"></div>
-  </div>
-
-  <div class="sec">
-    <h2>내 보유 입력 <small>이 기기에만 저장</small></h2>
-    <div class="inp">
-      <label>평균 단가 ($)<input id="myAvg" inputmode="decimal" placeholder="48.00"></label>
-      <label>매수 차수 (0~4차)<input id="myLots" inputmode="numeric" placeholder="1"></label>
-      <label>보유 수량 (주)<input id="myQty" inputmode="numeric" placeholder="선택"></label>
-      <label>투자금 (원)<input id="myCash" inputmode="numeric" placeholder="선택 · 1회 매수 금액 계산"></label>
-    </div>
-    <div class="note">평균 단가와 매수 차수를 넣으면 '내 주식'과 '과거 비슷한 상황'이 내 기준으로 바뀌어요. <b>목표가는 항상 전략 목표가</b>를 써요 — 전략보다 싸게 샀다면 팔리는 때는 같고 그만큼 더 벌어요. 다 팔았으면 지워 주세요.</div>
-    <div style="margin-top:12px"><button class="btn" id="clearMine" type="button">입력 지우기</button></div>
   </div>
 
   <div class="sec">
@@ -243,7 +243,7 @@ function renderMy(){
     +(qty?`<div class="bigsub num ${ud(r)}">${r>=0?'+':'−'}$${fmt(Math.abs((price-avg)*qty))} · 약 ${r>=0?'+':'−'}${won(Math.abs((price-avg)*qty*fx))}</div>`:`<div class="bigsub mu">평균 단가 $${fmt(avg)} 기준</div>`)
     +`<div class="rows">${rows.map(([a,b,c])=>`<div class="row"><span class="k">${a}</span><span class="v num">${b}${c?`<small>${c}</small>`:''}</span></div>`).join('')}</div>`
     +`<div class="note" style="margin-top:4px">목표가까지 ${pct(tgt/price-1)} 남았어요</div><div class="bar"><i style="width:${(prog*100).toFixed(0)}%"></i></div>`
-    +(!mineOn&&n?`<div class="note">실제로 산 평균 단가와 매수 차수를 아래 '내 보유 입력'에 넣으면 내 기준으로 바뀌어요.</div>`:'');
+    +(!mineOn&&n?`<div class="note">실제로 산 평균 단가와 매수 차수를 바로 아래 '내가 실제로 산 것'에 넣으면 내 기준으로 바뀌어요.</div>`:'');
 }
 
 // 걸어 둘 주문(미체결). 현재가가 더 낮으면 현재가 기준으로 먼저 말하고, 전략 상한은 보조로.
@@ -326,7 +326,11 @@ function renderPast(){
   const I=D.inst[inst],lots=I.lots,P=I.plan,price=I.live.price,T=ROUNDS[inst],box=$('pastSec');
   if(!lots.length||!T||!price){box.hidden=true;return}
   box.hidden=false;
-  const R=T.rows,N=R.length,C=T.cost,p0=lots[0].px,dd=(price/p0-1)*100,B=Math.min(0,Math.ceil(dd)),m=mine(inst),amt=m.cash>0?m.cash*I.size:1e6;
+  // 2026-11-21 사용자: −5% 보고 −3%로 올라온 것처럼 경로가 중요 → 갈래는 '지금 가격'이 아니라 '1차 매수 뒤 지금까지 가장 많이 빠진 곳'으로(과거 거래도 '매도 전 최대 하락'으로 셈)
+  const R=T.rows,N=R.length,C=T.cost,p0=lots[0].px,dd=(price/p0-1)*100,m=mine(inst),amt=m.cash>0?m.cash*I.size:1e6;
+  const lowRows=(I.daily||[]).filter(b=>b[0]>lots[0].d),lowAll=[price,...lowRows.map(b=>b[3]),...(I.live.reg_l?[I.live.reg_l]:[])];
+  const lowPx=Math.min(...lowAll),lowD=(lowRows.find(b=>b[3]===lowPx)||[])[0]||(lowPx===I.live.reg_l?'오늘':''),mdd=Math.min(dd,(lowPx/p0-1)*100);
+  const B=Math.min(0,Math.ceil(mdd)),bounced=dd-mdd>=1,tn=bounced?dd:B;
   const myOn=m.avg>0&&m.lots!=null,held=myOn?+m.lots:lots.length,rem=Math.max(0,4-held);
   const since=R[0][0].slice(0,4),cnt=(a,b)=>`${a}번 (${Math.round(a/b*100)}%)`,px=t=>'$'+fmt(p0*(1+t/100));
   const S=D.signal,qn=D.qqq&&D.qqq.live&&D.qqq.live.price,qx=t=>qn?'QQQ $'+fmt(qn*(1+(p0*(1+t/100)/price-1)/I.k)):'',pq=t=>px(t)+(qn?' · '+qx(t):'');
@@ -334,6 +338,7 @@ function renderPast(){
   const br=(label,n,tot,cls='',tag='')=>`<div class="br ${cls}"><div class="top"><span>${label}${tag?`<span class="tag">${tag}</span>`:''}</span><b class="num">${n}번<small class="mu">${Math.round(n/tot*100)}%</small></b></div><div class="bar"><i style="width:${Math.max(2,n/tot*100)}%"></i></div></div>`;
   $('pastTitle').textContent='과거 비슷한 상황';
   let h=`<div class="lead">현재가 $${fmt(price)} · 1차 매수가 $${fmt(p0)}보다 <em>${dd<0?(-dd).toFixed(1)+'% 아래':dd.toFixed(1)+'% 위'}</em></div>`
+    +(bounced?`<div class="sub">1차 매수 뒤 가장 많이 빠진 곳: <b>${pct(mdd/100)}</b> ($${fmt(lowPx)}${lowD?' · '+(lowD==='오늘'?lowD:lowD.slice(5)):''}) → 지금 ${pct(dd/100)}로 올라옴. 과거와 비교는 가장 많이 빠진 곳 기준이에요.</div>`:'')
     +(qn&&S.hi?`<div class="sub">QQQ $${fmt(qn)} · 1년 고점 대비 ${pct(qn/S.hi-1)} · 새로 사는 마지막 선 QQQ $${fmt(S.hi*0.75)}(−25%)</div>`:'')+`<!--BOX-->`;
   const g1=R.filter(r=>r[1]>-2),deep=B<=-3?B:-5,g3=R.filter(r=>r[1]<=deep),g2=N-g1.length-g3.length,q1=g1.filter(r=>r[4]<=1).length,at=B>-2?1:B>deep?2:3;
   h+=`<div class="blk"><h3>1차 매수 뒤 과거 ${N}번 거래 <small>(${since}년~)</small></h3>`
@@ -353,26 +358,28 @@ function renderPast(){
     for(let i=0;i<cuts.length;i++){const hi=cuts[i],lo=cuts[i+1],c=H.filter(r=>r[1]<=hi&&(lo==null||r[1]>lo)).length;
       bk.push([lo==null?`−${-hi}%보다 더 <small>(${px(hi)} 아래${qn?' · '+qx(hi)+' 아래':''})</small>`:`−${-hi}~−${-lo}% <small>(${px(hi)}~${px(lo)}${qn?' · '+qx(hi)+'~'+qx(lo).slice(4):''})</small>`,c,''])}
     while(bk.length>2&&!bk[bk.length-1][1])bk.pop();
-    h+=`<div class="blk"><h3>이만큼(−${-B}%) 빠졌던 ${n}번, 가장 많이 빠진 곳 <small>(1차 매수가 대비 · 합계 ${n}번)</small></h3>`+bk.map(([l,c,cls])=>br(l,c,n,cls)).join('')
+    h+=`<div class="blk"><h3>${bounced?'지금까지처럼':'이만큼'}(−${-B}%) 빠졌던 ${n}번, 가장 많이 빠진 곳 <small>(1차 매수가 대비 · 합계 ${n}번)</small></h3>`+bk.map(([l,c,cls])=>br(l,c,n,cls)).join('')
       +`<div class="ok">그래도 <b>${n}번 중 ${wn}번은 결국 수익으로 매도</b>됐어요 (매도까지 보통 ${med}거래일).`+(lose.length?` 손실 ${lose.length}번: ${lose.map(r=>`${r[0].slice(0,7)} ${r[3]}%`).join(', ')}`:'')+`</div></div>`;
     const lotRet=(r,t)=>r[1]<=t?r[2]/(1+t/100)-1-C:0;
     const plan=(name,ts)=>{const v=H.map(r=>ts.reduce((a,t)=>a+lotRet(r,t),0));return {name,ts,v,avg:v.reduce((a,b)=>a+b,0)/n*100,worst:Math.min(...v)*100,loss:v.filter(x=>x<0).length,miss:ts.reduce((a,t)=>a+H.filter(r=>r[1]>t).length,0)}};
     let plans=[];
-    if(rem===1)plans=[plan('현재가 근처 매수',[B]),plan('조금 아래 지정가',[B-3]),plan('많이 아래 지정가',[B-6])];
-    else if(rem>=2)plans=[plan(`${held+1}~4차 지금 모두 매수`,Array(rem).fill(B)),plan('조금씩 아래로 나눠 지정가',[B,B-3,B-6].slice(0,rem)),plan('넓게 아래로 나눠 지정가',[B,B-5,B-10].slice(0,rem))];
+    // 지금 사기는 현재가(tn), 아래 지정가는 '가장 많이 빠진 곳' 기준으로 더 아래
+    const lv1=bounced?[B,B-3]:[B-3,B-6],lv2=bounced?[B-2,B-6]:[B-5,B-10];
+    if(rem===1)plans=[plan('현재가 근처 매수',[tn]),plan(bounced?'지난 저점 근처 지정가':'조금 아래 지정가',[lv1[0]]),plan('더 아래 지정가',[lv1[1]])];
+    else if(rem>=2)plans=[plan(`${held+1}~4차 지금 모두 매수`,Array(rem).fill(tn)),plan('조금씩 아래로 나눠 지정가',[tn,...lv1].slice(0,rem)),plan('넓게 아래로 나눠 지정가',[tn,...lv2].slice(0,rem))];
     let best=null;if(plans.length){const mx=Math.max(...plans.map(x=>x.avg));best=plans.filter(x=>x.avg>=mx-1).sort((a,b)=>b.worst-a.worst)[0]}
-    const where=x=>x.ts.map(t=>t===B?'현재가':pq(t)).join(' / ');
+    const where=x=>x.ts.map(t=>t===tn?'현재가':pq(t)).join(' / ');
     if(plans.length){
       const dots=x=>`<div class="dots" aria-hidden="true">${x.v.map(v=>v>0?'<i></i>':v<0?'<i class="l"></i>':'<i class="m"></i>').join('')}</div>`;
       h+=`<div class="blk"><h3>남은 ${rem===1?held+1+'차':`${held+1}~4차`} 매수, 어떻게 걸까 <small>(1회 ${Math.round(amt/1e4).toLocaleString()}만 원 · 목표가는 그대로)</small></h3>`
         +plans.map(x=>`<div class="plan${x===best?' best':''}"><div class="t">${x.name}${x===best?'<span class="tag" style="background:var(--red)">과거 가장 좋았음</span>':''}<small>${where(x)} · 체결 안 된 주문 ${x.miss}번 · 손실 거래 ${x.loss}번</small></div><div class="v num">${w(x.avg)}<small>평균 · 최악 ${w(x.worst)}</small></div>${dots(x)}</div>`).join('')
         +`<div class="key"><span><i></i>수익</span><span><i class="l"></i>손실</span><span><i class="m"></i>체결 안 됨(0원)</span><span>점 하나 = 과거 거래 하나</span></div></div>`;
     }
-    msg=mine1+`지금은 과거 ${N}번 거래 중 <b>${cnt(n,N)}만 이만큼 빠진 경우</b>예요. 이런 때는 보통 더 빠졌어요(${n}번 중 ${d3}번이 ${px(B-3)} 아래까지). 그래도 <b>${n}번 중 ${wn}번은 결국 수익</b>이었어요.`
+    msg=mine1+(bounced?`1차 매수 뒤 ${pct(mdd/100)}까지 빠졌다가 지금 ${pct(dd/100)}로 올라와 있어요. `:'')+`과거 ${N}번 거래 중 <b>${cnt(n,N)}만 이만큼(−${-B}%) 빠진 경우</b>예요. 이런 때는 보통 더 빠졌어요(${n}번 중 ${d3}번이 ${px(B-3)} 아래까지). 그래도 <b>${n}번 중 ${wn}번은 결국 수익</b>이었어요.`
       +(best?` 남은 ${rem===1?held+1+'차':`${held+1}~4차`}는 <b>${where(best)}</b>${best.ts.length>1?'로 나눠 건':'에 건'} 게 과거엔 가장 좋았어요(평균 ${w(best.avg)}, 최악 ${w(best.worst)}).`
         +(plans[0]!==best?` 지금 모두 사면 평균 ${w(plans[0].avg)}, 최악 ${w(plans[0].worst)}이었어요.`:''):' 4차까지 다 샀으니 목표가까지 기다리면 돼요.');
   }
-  h+=`<div class="note">${since}년~ 실제 ${inst} 가격 · 수수료 0.17% 반영 · 매도는 전략 목표가 그대로 · '과거 가장 좋았음'은 평균이 1만 원 안쪽으로 비슷하면 손실이 덜한 쪽 · 사례가 적어 대략적인 경향이에요.${myOn?'':" '내 보유 입력'에 평균 단가와 매수 차수를 넣으면 내 기준으로 바뀌어요."}</div>`;
+  h+=`<div class="note">${since}년~ 실제 ${inst} 가격 · 수수료 0.17% 반영 · 매도는 전략 목표가 그대로 · '과거 가장 좋았음'은 평균이 1만 원 안쪽으로 비슷하면 손실이 덜한 쪽 · 사례가 적어 대략적인 경향이에요.${myOn?'':" 위 '내가 실제로 산 것'에 평균 단가와 매수 차수를 넣으면 내 기준으로 바뀌어요."}</div>`;
   $('past').innerHTML=h.replace('<!--BOX-->',`<div class="box"><span class="k">지금 상황 풀이 · 과거엔 이랬어요</span>${msg}</div>`);
 }
 
