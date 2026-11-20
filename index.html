@@ -358,9 +358,13 @@ function renderEasy(){
     const lv=[B-3,B-5,B-10,B-15,B-20].filter((t,i,a)=>i===0||H.some(r=>r[1]<=a[i-1]));
     const days=H.map(r=>r[4]).sort((a,b)=>a-b),med=days[Math.floor((days.length-1)/2)],lose=H.filter(r=>r[3]<=0);
     // ② 지금처럼 빠진 회차는 그 뒤에
-    h+=`<div class="sec"><h4>지금처럼 ${-B}% 넘게 빠졌던 ${n}번은 그 뒤에</h4>`
-      +row(`여기서 바로 올라감 <small>(3% 더 안 빠짐)</small>`,H.filter(r=>r[1]>B-3).length,n,'up')
-      +lv.map(t=>row(`첫 묶음 −${-t}%까지 내려감 <small>(${px(t)})</small>`,H.filter(r=>r[1]<=t).length,n)).join('')
+    // 2026-11-20 사용자: '−8%까지 15번 · −10%까지 12번'처럼 겹쳐 세면 헷갈림 → 회차마다 가장 낮았던 곳 한 칸에만 넣음(다 더하면 n번)
+    const cuts=[B-3,B-5,B-10,B-15,B-20],bk=[[`여기서 바로 올라감 <small>(첫 묶음 −${-B}~−${-cuts[0]}%에서 멈춤)</small>`,H.filter(r=>r[1]>cuts[0]).length,'up']];
+    for(let i=0;i<cuts.length;i++){const hi=cuts[i],lo=cuts[i+1],c=H.filter(r=>r[1]<=hi&&(lo==null||r[1]>lo)).length;
+      bk.push([lo==null?`첫 묶음 −${-hi}%보다 더 <small>(${px(hi)} 아래)</small>`:`첫 묶음 −${-hi}~−${-lo}%까지 <small>(${px(hi)}~${px(lo)})</small>`,c,''])}
+    while(bk.length>2&&!bk[bk.length-1][1])bk.pop();
+    h+=`<div class="sec"><h4>지금처럼 ${-B}% 넘게 빠졌던 ${n}번은 어디까지 내려갔다가 올라왔나 <small style="color:var(--mute);font-weight:400">(회차마다 가장 낮았던 곳 · 다 더하면 ${n}번)</small></h4>`
+      +bk.map(([l,c,cls])=>row(l,c,n,cls)).join('')
       +`<div class="verdict">그래도 결국 <b>${n}번 중 ${w}번은 이익으로 끝났어요</b>(팔릴 때까지 보통 ${med}거래일).`
       +(lose.length?` 진 ${lose.length}번: ${lose.map(r=>`${r[0].slice(0,7)} 회차 ${r[3]}%`).join(', ')}.`:'')+`</div></div>`;
     // ③ 남은 묶음 걸기 비교(못 산 묶음 0원, 파는 값은 규칙 매도선)
