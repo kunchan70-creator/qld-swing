@@ -4,183 +4,167 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<title>QLD 단타 지금 할 일</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23d6336c'/><path d='M6 22l7-8 5 5 8-10' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+<title>공포 단타 주문</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%233182f6'/><path d='M6 22l7-8 5 5 8-10' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <style>
-:root{--bg:#f6f7f9;--panel:#fff;--ink:#14171c;--sub:#4a5260;--mute:#8a93a1;--line:#e4e7ec;
- --buy:#e03131;--buy-bg:#fff0f0;--sell:#1c64d9;--sell-bg:#eef4ff;--wait:#5b6676;--wait-bg:#f1f3f6;--warn:#c27500;--warn-bg:#fff6e5;--ok:#11865b;
- --r:14px;--sh:0 1px 2px rgba(16,24,40,.06),0 4px 16px rgba(16,24,40,.05)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1116;--panel:#171b22;--ink:#e8ebf0;--sub:#aab2bf;--mute:#7d8796;--line:#2a303a;
- --buy:#ff6b6b;--buy-bg:#2a1719;--sell:#5b9bff;--sell-bg:#152238;--wait:#aab2bf;--wait-bg:#1d222b;--warn:#f0a73a;--warn-bg:#2b2112;--ok:#3ccf8e;--sh:none}}
-:root[data-theme="dark"]{--bg:#0e1116;--panel:#171b22;--ink:#e8ebf0;--sub:#aab2bf;--mute:#7d8796;--line:#2a303a;
- --buy:#ff6b6b;--buy-bg:#2a1719;--sell:#5b9bff;--sell-bg:#152238;--wait:#aab2bf;--wait-bg:#1d222b;--warn:#f0a73a;--warn-bg:#2b2112;--ok:#3ccf8e;--sh:none}
+/* 2026-11-20 사용자: 토스증권 화면 형식·주식 앱 용어로 다시 만듦 */
+:root{--bg:#f2f4f6;--panel:#fff;--ink:#191f28;--sub:#4e5968;--mute:#8b95a1;--line:#e5e8eb;--fill:#f2f4f6;
+ --red:#f04452;--red-bg:#fff0f1;--blue:#3182f6;--blue-bg:#e8f3ff;--orange:#fe9800;--orange-bg:#fff5e6}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#101013;--panel:#1d1d22;--ink:#e9e9ec;--sub:#b0b0b9;--mute:#7e7e88;--line:#2c2c34;--fill:#2a2a31;
+ --red:#f4576a;--red-bg:#3a1d22;--blue:#4c95fb;--blue-bg:#17273f;--orange:#ffab2e;--orange-bg:#33260f}}
+:root[data-theme="dark"]{--bg:#101013;--panel:#1d1d22;--ink:#e9e9ec;--sub:#b0b0b9;--mute:#7e7e88;--line:#2c2c34;--fill:#2a2a31;
+ --red:#f4576a;--red-bg:#3a1d22;--blue:#4c95fb;--blue-bg:#17273f;--orange:#ffab2e;--orange-bg:#33260f}
 *{box-sizing:border-box}html,body{margin:0}
-body{background:var(--bg);color:var(--ink);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:anywhere}
-.wrap{max-width:760px;margin:0 auto;padding:12px 16px 40px}
-.top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
-.top h1{font-size:17px;margin:0 auto 0 0;letter-spacing:-.2px}
-.seg{display:inline-flex;background:var(--wait-bg);border-radius:10px;padding:3px}
-.seg button{border:0;background:none;color:var(--sub);font:600 14px/1 inherit;padding:8px 14px;border-radius:8px;cursor:pointer}
-.seg button[aria-pressed="true"]{background:var(--panel);color:var(--ink);box-shadow:var(--sh)}
-.meta{font-size:12.5px;color:var(--mute);display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:-2px 0 10px}
-.pill{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:99px;background:var(--wait-bg);color:var(--sub)}
-.pill.live{background:var(--buy-bg);color:var(--buy)}.pill.stale{background:var(--warn-bg);color:var(--warn)}
-.card{background:var(--panel);border-radius:var(--r);box-shadow:var(--sh);border:1px solid var(--line);padding:16px;margin-bottom:12px}
-.hero{border-width:2px;padding:18px 18px 16px}
-.hero.buy{border-color:var(--buy);background:linear-gradient(var(--buy-bg),var(--panel) 70%)}
-.hero.sell{border-color:var(--sell);background:linear-gradient(var(--sell-bg),var(--panel) 70%)}
-.hero.warn{border-color:var(--warn);background:linear-gradient(var(--warn-bg),var(--panel) 70%)}
-.hero .tag{font-size:13px;font-weight:800;letter-spacing:.2px}
-.hero.buy .tag{color:var(--buy)}.hero.sell .tag{color:var(--sell)}.hero.warn .tag{color:var(--warn)}.hero.wait .tag{color:var(--wait)}
-.hero h2{font-size:24px;line-height:1.3;margin:4px 0 6px;letter-spacing:-.4px}
-.hero .price{font-size:34px;font-weight:800;letter-spacing:-.8px;font-variant-numeric:tabular-nums}
-.hero.buy .price{color:var(--buy)}.hero.sell .price{color:var(--sell)}.hero.warn .price{color:var(--warn)}
-.hero .why{color:var(--sub);font-size:14px;margin-top:6px}
-.hero .then{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:14px;color:var(--sub)}
-.hero .then b{color:var(--ink)}
-.gauge{margin-top:12px}
-.gauge .bar{position:relative;height:10px;border-radius:99px;background:var(--wait-bg);overflow:visible}
-.gauge .fill{position:absolute;top:0;bottom:0;border-radius:99px}
-.gauge .mark{position:absolute;top:-4px;width:2px;height:18px;background:var(--ink);border-radius:2px}
-.gauge .lbl{display:flex;justify-content:space-between;font-size:12px;color:var(--mute);margin-top:6px;font-variant-numeric:tabular-nums}
-h3{font-size:14px;margin:0 0 10px;color:var(--sub);font-weight:700}
-.tickets{display:grid;gap:8px}
-.tk{display:grid;grid-template-columns:auto 1fr auto;gap:4px 10px;align-items:center;padding:10px 12px;border-radius:10px;background:var(--wait-bg)}
-.tk .k{font-size:12px;font-weight:800;padding:3px 7px;border-radius:6px;color:#fff}
-.tk .k.b{background:var(--buy)}.tk .k.s{background:var(--sell)}.tk .k.w{background:var(--warn)}
-.tk .t{font-weight:700}.tk .t small{display:block;font-weight:400;color:var(--mute);font-size:12.5px}
-.tk .p{font-weight:800;font-size:17px;font-variant-numeric:tabular-nums;text-align:right}
-.tk .p small{display:block;font-weight:600;font-size:12px;color:var(--mute)}
-.tk.done{opacity:.55}
-.chartbox{position:relative;height:330px;margin:0 -6px}
-.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--sub);margin-top:8px}
-.legend i{display:inline-block;width:16px;height:0;border-top:2px dashed;vertical-align:middle;margin-right:5px}
-.checks{display:grid;gap:8px}
-.ck{display:grid;grid-template-columns:24px 1fr;gap:8px;align-items:start}
-.ck .ic{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:900;color:#fff}
-.ck .ic.y{background:var(--ok)}.ck .ic.n{background:var(--mute)}
-.ck b{display:block}.ck span{color:var(--sub);font-size:13.5px}
-.mine{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.mine label{font-size:12.5px;color:var(--sub);display:grid;gap:4px}
-.mine input{font:inherit;padding:9px 10px;border-radius:9px;border:1px solid var(--line);background:var(--bg);color:var(--ink);width:100%}
-.mine .full{grid-column:1/-1}
-.note{font-size:12.5px;color:var(--mute);margin-top:8px}
-.easy .lead{font-size:16px;font-weight:700;line-height:1.45}
-.easy .lead em{font-style:normal;color:var(--sell)}
-.easy .sub{font-size:13.5px;color:var(--sub);margin-top:4px}
-.opt{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:center;padding:10px 12px;border-radius:10px;background:var(--wait-bg);margin-top:8px}
-.opt .t{font-weight:700}.opt .t small{display:block;font-weight:400;color:var(--mute);font-size:12.5px}
-.opt .v{font-weight:800;font-size:17px;text-align:right;font-variant-numeric:tabular-nums;color:var(--buy)}
-.opt .v small{display:block;font-weight:600;font-size:12px;color:var(--mute)}
-.opt.best{outline:2px solid var(--buy);outline-offset:-2px}
-.dots{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:3px;margin-top:6px}
-.dots i{width:11px;height:11px;border-radius:50%;background:var(--buy)}
-.dots i.l{background:var(--sell)}.dots i.m{background:none;border:1.5px solid var(--mute)}
-.dkey{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--mute);margin-top:8px}
-.dkey i{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--buy);vertical-align:-1px;margin-right:4px}
-.dkey i.l{background:var(--sell)}.dkey i.m{background:none;border:1.5px solid var(--mute)}
-.easy .sum{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:14.5px}
-.sec{margin-top:14px}.sec>h4{font-size:14px;margin:0 0 6px}
-.pr{display:grid;grid-template-columns:1fr auto;gap:3px 8px;align-items:baseline;padding:5px 0}
-.pr .l{font-size:14px}.pr .l small{color:var(--mute);font-size:12.5px}
-.pr .c{font-weight:800;font-variant-numeric:tabular-nums;font-size:14.5px;text-align:right}
-.pr .c small{font-weight:600;color:var(--mute);font-size:12px;margin-left:3px}
-.pr .bar{grid-column:1/-1;height:8px;border-radius:99px;background:var(--wait-bg);overflow:hidden}
-.pr .bar i{display:block;height:100%;border-radius:99px;background:var(--mute)}
-.pr.here .bar i{background:var(--sell)}.pr.up .bar i{background:var(--buy)}
-.chip{display:inline-block;font-size:11.5px;font-weight:800;color:#fff;background:var(--sell);border-radius:6px;padding:1px 6px;margin-left:6px;vertical-align:1px}
-.verdict{margin-top:8px;padding:10px 12px;border-radius:10px;background:var(--buy-bg);font-size:14.5px}
-.verdict b{color:var(--buy)}
-.advice{margin-top:10px;padding:12px 14px;border-radius:12px;background:var(--wait-bg);border-left:4px solid var(--sell);font-size:15px;line-height:1.6}
-.advice b{color:var(--ink)}.advice .k{display:block;font-size:12px;font-weight:800;color:var(--sell);margin-bottom:2px}
-.btn{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:9px;padding:8px 12px;font:600 13px inherit;cursor:pointer}
-.err{background:var(--warn-bg);color:var(--warn);border-radius:10px;padding:10px 12px;font-size:13.5px;margin-bottom:10px;display:none}
-a{color:var(--sell)}
-.small-row{display:flex;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--sub)}
-.small-row b{color:var(--ink);font-variant-numeric:tabular-nums}
-.pill.buy{background:var(--buy-bg);color:var(--buy)}.pill.sell{background:var(--sell-bg);color:var(--sell)}
-.sthead{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
-.sthead .pill{font-size:13px;padding:3px 10px}
-.stgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-@media (max-width:560px){.stgrid{grid-template-columns:1fr 1fr}.lott .i{display:none}}
-.st{background:var(--wait-bg);border-radius:10px;padding:8px 10px;min-width:0}
-.st small{display:block;font-size:12px;color:var(--mute)}
-.st b{display:block;font-size:18px;font-variant-numeric:tabular-nums;letter-spacing:-.3px}
-.lotw{overflow-x:auto;margin-top:10px}
-.lott{width:100%;border-collapse:collapse;font-size:13.5px;font-variant-numeric:tabular-nums}
-.lott th{font-size:12px;font-weight:600;color:var(--mute);text-align:left;padding:4px 6px;border-bottom:1px solid var(--line)}
-.lott td{padding:7px 4px;border-bottom:1px solid var(--line);white-space:nowrap}
-.lott td.h{white-space:normal;min-width:7em}.lott td.h b{display:block;font-size:12px;color:var(--buy)}
-.lott .n{text-align:right}.lott tr.pend td{color:var(--mute)}
-.lott .ok{color:var(--ok);font-weight:700}.lott .up{color:var(--buy)}.lott .dn{color:var(--sell)}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:anywhere;letter-spacing:-.2px}
+.wrap{max-width:600px;margin:0 auto;padding-bottom:40px}
+.sec{background:var(--panel);padding:22px 20px;margin-bottom:10px}
+@media (min-width:640px){.wrap{padding-top:12px}.sec{border-radius:20px}}
+.sec h2{font-size:19px;font-weight:700;margin:0 0 14px;letter-spacing:-.4px;display:flex;align-items:center;gap:8px}
+.sec h2 small{font-size:13px;font-weight:500;color:var(--mute);letter-spacing:0}
+.num{font-variant-numeric:tabular-nums}
+.up{color:var(--red)}.dn{color:var(--blue)}.mu{color:var(--mute)}
+/* 상단: 종목 탭 + 현재가 */
+.tabs{display:flex;gap:18px;border-bottom:1px solid var(--line);margin:-6px -20px 18px;padding:0 20px}
+.tabs button{border:0;background:none;font:600 17px/1 inherit;color:var(--mute);padding:12px 0 13px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tabs button[aria-pressed="true"]{color:var(--ink);border-bottom-color:var(--ink)}
+.tabs a{margin-left:auto;align-self:center;font-size:14px;font-weight:600;color:var(--sub);text-decoration:none;background:var(--fill);padding:7px 12px;border-radius:8px}
+.nm{font-size:15px;color:var(--sub);font-weight:600}.nm span{color:var(--mute);font-weight:500;margin-left:6px}
+.px{font-size:30px;font-weight:700;letter-spacing:-.8px;margin:2px 0}
+.chg{font-size:15px;font-weight:600}
+.meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px;font-size:13px;color:var(--mute)}
+.chip{display:inline-block;font-size:12px;font-weight:700;padding:3px 8px;border-radius:6px;background:var(--fill);color:var(--sub);letter-spacing:0}
+.chip.red{background:var(--red-bg);color:var(--red)}.chip.blue{background:var(--blue-bg);color:var(--blue)}.chip.orange{background:var(--orange-bg);color:var(--orange)}
+/* 내 주식 */
+.big{font-size:28px;font-weight:700;letter-spacing:-.6px}
+.bigsub{font-size:14px;font-weight:600;margin-top:2px}
+.rows{margin-top:16px}
+.row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:9px 0}
+.row .k{color:var(--sub);font-size:15px;flex-shrink:0}
+.row .v{text-align:right;font-weight:600}.row .v small{display:block;font-weight:500;font-size:13px;color:var(--mute)}
+.bar{height:6px;border-radius:99px;background:var(--fill);overflow:hidden;margin-top:6px}
+.bar i{display:block;height:100%;border-radius:99px;background:var(--red)}
+/* 주문 목록 */
+.ord{display:grid;grid-template-columns:auto 1fr auto;gap:2px 12px;align-items:center;padding:14px 0;border-top:1px solid var(--line)}
+.ord:first-of-type{border-top:0}
+.ord .side{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:700}
+.ord .side.buy{background:var(--red-bg);color:var(--red)}.ord .side.sell{background:var(--blue-bg);color:var(--blue)}.ord .side.info{background:var(--fill);color:var(--mute)}
+.ord .t{font-weight:700;font-size:16px}.ord .t small{display:block;font-weight:500;font-size:13px;color:var(--mute);margin-top:2px;line-height:1.45}
+.ord .p{text-align:right;font-weight:700;font-size:16px}.ord .p small{display:block;font-weight:500;font-size:12.5px;color:var(--mute)}
+.ord .s{grid-column:2/-1;margin-top:4px}
+.empty{color:var(--mute);font-size:15px;padding:6px 0}
+/* 과거 비슷한 상황 */
+.lead{font-size:17px;font-weight:700;line-height:1.45}
+.lead em{font-style:normal;color:var(--blue)}
+.sub{font-size:14px;color:var(--sub);margin-top:6px}
+.box{margin-top:14px;padding:16px;border-radius:14px;background:var(--fill);font-size:15px;line-height:1.65}
+.box .k{display:block;font-size:13px;font-weight:700;color:var(--blue);margin-bottom:4px}
+.box b{color:var(--ink)}
+.blk{margin-top:22px}.blk>h3{font-size:16px;font-weight:700;margin:0 0 8px}.blk>h3 small{font-weight:500;color:var(--mute);font-size:13px}
+.br{padding:8px 0}
+.br .top{display:flex;justify-content:space-between;gap:10px;font-size:14.5px}
+.br .top small{color:var(--mute);font-size:13px}
+.br .top b{font-weight:700;white-space:nowrap}.br .top b small{margin-left:4px}
+.br .bar i{background:var(--mute)}.br.here .bar i{background:var(--blue)}.br.good .bar i{background:var(--red)}
+.tag{display:inline-block;font-size:11.5px;font-weight:700;color:#fff;background:var(--blue);border-radius:5px;padding:1px 6px;margin-left:6px;vertical-align:1px}
+.ok{margin-top:10px;padding:14px 16px;border-radius:14px;background:var(--red-bg);font-size:15px}
+.ok b{color:var(--red)}
+.plan{padding:14px 16px;border-radius:14px;background:var(--fill);margin-top:8px;display:grid;grid-template-columns:1fr auto;gap:2px 12px;align-items:center}
+.plan.best{box-shadow:inset 0 0 0 2px var(--red)}
+.plan .t{font-weight:700}.plan .t small{display:block;font-weight:500;color:var(--mute);font-size:13px;margin-top:2px}
+.plan .v{text-align:right;font-weight:700;font-size:17px;color:var(--red)}.plan .v small{display:block;font-weight:500;font-size:12.5px;color:var(--mute)}
+.dots{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:3px;margin-top:8px}
+.dots i{width:10px;height:10px;border-radius:50%;background:var(--red)}
+.dots i.l{background:var(--blue)}.dots i.m{background:none;box-shadow:inset 0 0 0 1.5px var(--mute)}
+.key{display:flex;gap:12px;flex-wrap:wrap;font-size:12.5px;color:var(--mute);margin-top:10px}
+.key i{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--red);margin-right:4px;vertical-align:0}
+.key i.l{background:var(--blue)}.key i.m{background:none;box-shadow:inset 0 0 0 1.5px var(--mute)}
+/* 차트·조건·입력 */
+.seg{display:inline-flex;background:var(--fill);border-radius:10px;padding:3px;margin-left:auto}
+.seg button{border:0;background:none;color:var(--sub);font:600 13px/1 inherit;padding:7px 12px;border-radius:8px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--panel);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.chartbox{position:relative;height:300px;margin:0 -8px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--sub);margin-top:8px}
+.legend i{display:inline-block;width:14px;height:0;border-top:2px dashed;vertical-align:middle;margin-right:5px}
+.ck{display:grid;grid-template-columns:22px 1fr;gap:10px;padding:8px 0;align-items:start}
+.ck .ic{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:800;color:#fff;background:var(--mute)}
+.ck .ic.y{background:var(--blue)}
+.ck b{display:block;font-weight:700}.ck span{color:var(--sub);font-size:14px}
+.inp{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.inp label{font-size:13px;color:var(--sub);display:grid;gap:6px;font-weight:600}
+.inp input{font:inherit;font-size:16px;padding:12px 14px;border-radius:12px;border:0;background:var(--fill);color:var(--ink);width:100%}
+.inp input:focus{outline:2px solid var(--blue)}
+.inp .full{grid-column:1/-1}
+.note{font-size:13px;color:var(--mute);margin-top:10px;line-height:1.55}
+.btn{border:0;background:var(--fill);color:var(--sub);border-radius:10px;padding:9px 14px;font:600 14px inherit;cursor:pointer}
+.err{background:var(--orange-bg);color:var(--orange);padding:12px 20px;font-size:14px;display:none}
+a{color:var(--blue)}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="top">
-    <h1>지금 할 일</h1>
-    <a href="guide.html" style="font-size:13px;font-weight:700;color:var(--sell);text-decoration:none;padding:7px 10px;border-radius:9px;background:var(--sell-bg)">설명서</a>
-    <div class="seg" id="instSeg" role="group" aria-label="상품"><button type="button" data-v="QLD" aria-pressed="true">QLD</button><button type="button" data-v="TQQQ" aria-pressed="false">TQQQ</button></div>
-  </div>
-  <div class="meta" id="meta"><span class="pill">불러오는 중</span></div>
   <div class="err" id="err"></div>
 
-  <div class="card" id="stCard">
-    <div class="sthead"><h3 style="margin:0" id="stTitle">지금 상태</h3><span class="pill" id="stPill"></span></div>
-    <div class="stgrid" id="stGrid"></div>
-    <div class="lotw" id="stLots"></div>
-    <div class="note" id="stNote"></div>
+  <div class="sec">
+    <div class="tabs" id="instSeg" role="group" aria-label="종목"><button type="button" data-v="QLD" aria-pressed="true">QLD</button><button type="button" data-v="TQQQ" aria-pressed="false">TQQQ</button><a href="guide.html">설명서</a></div>
+    <div class="nm" id="nm">불러오는 중</div>
+    <div class="px num" id="px"></div>
+    <div class="chg num" id="chg"></div>
+    <div class="meta" id="meta"></div>
   </div>
 
-  <div class="card easy" id="ezCard" hidden>
-    <h3 id="ezTitle">지금 상황, 쉽게</h3>
-    <div id="ezBody"></div>
+  <div class="sec">
+    <h2>내 주식 <span class="chip" id="myState"></span></h2>
+    <div id="my"></div>
   </div>
 
-  <div class="card hero wait" id="hero">
-    <div class="tag" id="heroTag">불러오는 중</div>
-    <h2 id="heroTitle">잠시만요</h2>
-    <div class="price" id="heroPrice"></div>
-    <div class="why" id="heroWhy"></div>
-    <div class="gauge" id="gauge" hidden><div class="bar"><div class="fill" id="gFill"></div><div class="mark" id="gMark"></div></div><div class="lbl"><span id="gL"></span><span id="gR"></span></div></div>
-    <div class="then" id="heroThen" hidden></div>
+  <div class="sec">
+    <h2>걸어 둘 주문 <small id="ordSess"></small></h2>
+    <div id="orders"></div>
   </div>
 
-  <div class="card">
-    <h3>미리 걸어 둘 주문 <span id="tkSess" style="font-weight:400;color:var(--mute)"></span></h3>
-    <div class="tickets" id="tickets"></div>
+  <div class="sec" id="pastSec" hidden>
+    <h2 id="pastTitle">과거 비슷한 상황</h2>
+    <div id="past"></div>
   </div>
 
-  <div class="card">
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-      <h3 style="margin:0 auto 0 0" id="chartTitle">가격과 주문선</h3>
-      <div class="seg" id="rangeSeg" role="group" aria-label="기간"><button type="button" data-v="day" aria-pressed="true">오늘 5분</button><button type="button" data-v="d90" aria-pressed="false">3달</button></div>
-    </div>
+  <div class="sec">
+    <h2>체결 내역 <small>전략 기준 · 체결 추정</small></h2>
+    <div id="fills"></div>
+  </div>
+
+  <div class="sec">
+    <h2><span id="chartTitle">차트</span><div class="seg" id="rangeSeg" role="group" aria-label="기간"><button type="button" data-v="day" aria-pressed="true">1일</button><button type="button" data-v="d90" aria-pressed="false">3개월</button></div></h2>
     <div class="chartbox" id="chart"></div>
     <div class="legend" id="legend"></div>
   </div>
 
-  <div class="card">
-    <h3>왜 이 주문인가 (어제 QQQ 마감 기준)</h3>
-    <div class="checks" id="checks"></div>
-    <div class="small-row" id="qqqRow" style="margin-top:12px"></div>
+  <div class="sec">
+    <h2>매수 조건 <small id="ckDay"></small></h2>
+    <div id="checks"></div>
   </div>
 
-  <div class="card">
-    <h3>내 실제 보유 (이 브라우저에만 저장)</h3>
-    <div class="mine">
-      <label>내 평균 단가 ($)<input id="myAvg" inputmode="decimal" placeholder="예: 48.00"></label>
-      <label>산 묶음 수 (0~4)<input id="myLots" inputmode="numeric" placeholder="예: 1"></label>
-      <label class="full">보유 수량 (주) · 선택<input id="myQty" inputmode="numeric" placeholder="예: 150"></label>
-      <input id="myTop" type="hidden">
-      <label class="full">이 상품에 쓰는 돈 (원)<input id="myCash" inputmode="numeric" placeholder="예: 100000000 → 한 묶음 금액·주수 계산"></label>
+  <div class="sec">
+    <h2>내 보유 입력 <small>이 기기에만 저장</small></h2>
+    <div class="inp">
+      <label>평균 단가 ($)<input id="myAvg" inputmode="decimal" placeholder="48.00"></label>
+      <label>매수 차수 (0~4차)<input id="myLots" inputmode="numeric" placeholder="1"></label>
+      <label>보유 수량 (주)<input id="myQty" inputmode="numeric" placeholder="선택"></label>
+      <label>투자금 (원)<input id="myCash" inputmode="numeric" placeholder="선택 · 1회 매수 금액 계산"></label>
     </div>
-    <div class="note">평균 단가와 산 묶음 수만 넣으면 '지금 상황' 풀이가 내 기준으로 바뀝니다. <b>매도선은 늘 규칙 매도선</b>이라(규칙보다 싸게 샀으면 팔리는 때는 같고 더 법니다) 내 평균 단가는 내 수익 계산에만 씁니다. 다 팔았으면 지우세요. <button class="btn" id="clearMine" type="button">지우기</button></div>
-    <div class="note" id="ruleLots"></div>
+    <div class="note">평균 단가와 매수 차수를 넣으면 '내 주식'과 '과거 비슷한 상황'이 내 기준으로 바뀌어요. <b>목표가는 항상 전략 목표가</b>를 써요 — 전략보다 싸게 샀다면 팔리는 때는 같고 그만큼 더 벌어요. 다 팔았으면 지워 주세요.</div>
+    <div style="margin-top:12px"><button class="btn" id="clearMine" type="button">입력 지우기</button></div>
   </div>
 
-  <div class="note">규칙: 어제 마감 공포(공포탐욕 30↓ 또는 VIX 30↑) + QQQ 1년 고점 대비 −10~−25% → RSI 30 가격 지정가(이미 30↓면 마감 두 묶음 + 어제 종가 지정가) · 공포 미확정이면 RSI 26 가격 · QQQ 하루 −2.5% & 5일 −7.5% 마감이면 한 묶음(QLD·TQQQ) · 평균 단가 +5%(QLD) / +7.5%(TQQQ) 전량 매도(첫 묶음보다 비싸게 산 묶음이 있으면 그중 가장 비싼 값 기준) · 첫 매수 10거래일째 마감 정리.
-  자세한 근거: <a href="https://claude.ai/artifact/V6shjRDDuvreVmJ6NeRZbu" target="_blank" rel="noopener">교본</a> · 과거 시험일 뿐 앞으로를 보장하지 않습니다. <button class="btn" id="reload" type="button">새로고침</button></div>
+  <div class="sec">
+    <h2>전략 요약</h2>
+    <div class="note" style="margin-top:0;font-size:14px;color:var(--sub)">
+      <b>매수:</b> 전날 마감에 공포(공포탐욕 30 이하 또는 VIX 30 이상) + QQQ 1년 고점 대비 −10~−25% + RSI 30 아래 → 애프터마켓 2회(전날 종가 +0.5%까지) + 정규장 전날 종가 지정가 1회. RSI가 아직 30 위면 RSI 30 가격에 지정가 1회, 공포가 아직 아니면 RSI 26 가격에 1회. QQQ 하루 −2.5% & 5일 −7.5% 마감이면 애프터마켓 1회. 종목마다 최대 4차까지.<br>
+      <b>비중:</b> 1회 매수 QLD 15% · TQQQ 10%(투자금 기준).<br>
+      <b>매도:</b> 평균 단가 +5%(QLD) · +7.5%(TQQQ)에 전량 지정가(1차보다 비싸게 산 차수가 있으면 그중 가장 비싼 값 기준). 보유 기한은 1차 매수 뒤 10거래일째 마감.<br>
+      과거 시험 결과일 뿐 앞으로를 보장하지 않아요 · <a href="https://claude.ai/artifact/V6shjRDDuvreVmJ6NeRZbu" target="_blank" rel="noopener">교본</a> · <button class="btn" id="reload" type="button" style="padding:5px 10px;font-size:13px">새로고침</button>
+    </div>
+  </div>
 </div>
 
 <script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
@@ -188,287 +172,238 @@ a{color:var(--sell)}
 const SRC=location.search.includes('local')?['data.json']:['https://api.github.com/repos/kunchan70-creator/qld-swing/contents/data.json?ref=data','https://raw.githubusercontent.com/kunchan70-creator/qld-swing/data/data.json'];
 const $=id=>document.getElementById(id);
 const fmt=(x,d=2)=>x==null||isNaN(x)?'–':Number(x).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
-const pct=x=>x==null||isNaN(x)?'–':(x>0?'+':'')+(x*100).toFixed(1)+'%';
+const pct=x=>x==null||isNaN(x)?'–':(x>0?'+':x<0?'−':'')+Math.abs(x*100).toFixed(1)+'%';
+const ud=x=>x>0?'up':x<0?'dn':'';
 const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 const kst=ts=>{const p=Object.fromEntries(new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Seoul',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(new Date(ts*1000)).map(x=>[x.type,x.value]));return `${p.month}-${p.day} ${p.hour}:${p.minute}`};
-const kstHM=ts=>new Date(ts*1000).toLocaleTimeString('ko-KR',{timeZone:'Asia/Seoul',hour:'2-digit',minute:'2-digit',hour12:false});
 const store={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
-let LV=[], D=null, inst=store.get('inst')||'QLD', range='day', chart=null, series=null, lines=[], lastFetch=0;
+const NAME={QLD:'나스닥100 2배',TQQQ:'나스닥100 3배'};
+let LV=[],D=null,inst=store.get('inst')||'QLD',range='day',chart=null,series=null,lines=[],lastFetch=0;
 
 async function load(){
   $('err').style.display='none';
   for(const u of SRC){
-    try{
-      const r=await fetch(u,{cache:'no-cache',headers:u.includes('api.github.com')?{Accept:'application/vnd.github.raw+json'}:{}});
-      if(!r.ok)continue;
-      D=await r.json();lastFetch=Date.now();render();return;
-    }catch(e){}
+    try{const r=await fetch(u,{cache:'no-cache',headers:u.includes('api.github.com')?{Accept:'application/vnd.github.raw+json'}:{}});
+      if(!r.ok)continue;D=await r.json();lastFetch=Date.now();render();return}catch(e){}
   }
-  $('err').textContent='데이터를 못 불러왔어요. 잠시 뒤 새로고침하거나 폰 알림을 따르세요.';$('err').style.display='block';
+  $('err').textContent='데이터를 못 불러왔어요. 잠시 뒤 새로고침하거나 폰 알림을 따라 주세요.';$('err').style.display='block';
 }
-
 function phase(now){
   const o=D.open_ts,c=D.close_ts;
-  if(now<o-5.5*3600)return['before','장 전'];
+  if(now<o-5.5*3600)return['before','장 시작 전'];
   if(now<o)return['pre','프리마켓'];
   if(now<c)return['regular','정규장'];
-  if(now<c+4*3600)return['post','장 후'];
-  return['after','마감'];
+  if(now<c+4*3600)return['post','애프터마켓'];
+  return['after','장 마감'];
 }
-
-function base(pos,tp){return pos.top?`첫 묶음보다 위에서 산 가장 비싼 $${fmt(pos.top)} +${+(tp*100).toFixed(1)}% (평균 $${fmt(pos.avg)})`:`평균 $${fmt(pos.avg)} +${+(tp*100).toFixed(1)}%`}
-function mine(s){const m=store.get('mine_'+s)||{};return m}
-function position(s,I){
-  const m=mine(s),my=m.avg>0?{avg:+m.avg,lots:m.lots!=null?+m.lots:null,qty:+m.qty||null}:null;
-  // 2026-11-20 사용자: 매도선은 늘 규칙 매도선(규칙이 산 걸로 친 묶음 기준). 규칙보다 싸게 샀으면 팔리는 때는 시험과 같고 그만큼 더 법니다.
-  // 내 평균 단가(my)는 내 수익 계산에만. 규칙 보유가 없을 때만 내 평균 +목표%를 씀.
-  if(I.plan.hold>0)return{src:'rule',avg:I.plan.avg,top:I.plan.top||null,tgt:I.plan.tgt,n:I.plan.hold,due:I.plan.due,last:I.plan.last,my};
-  if(my)return{src:'mine',avg:my.avg,qty:my.qty,top:null,tgt:+(my.avg*(1+I.tp)).toFixed(2),n:my.lots,due:I.plan.due,last:I.plan.last,my};
-  return null;
-}
-function lotInfo(s,I,px){const m=mine(s);if(!(m.cash>0)||!px)return'';const amt=m.cash*I.size;return ` · 한 묶음 ${Math.round(amt/10000).toLocaleString()}만 원 ≈ ${Math.floor(amt/(px*(D.fx||1450)))}주`}
-
-function decide(s){
-  const I=D.inst[s],S=D.signal,now=Date.now()/1000,[ph]=phase(now),L=I.live,price=L.price,pos=position(s,I),P=I.plan,tp=I.tp;
-  const regLow=ph==='regular'||ph==='post'||ph==='after'?L.reg_l:null;
-  const acts=[];
-  const stale=now>=D.close_ts;   // 이 주문표의 장이 끝남 → 마감 확정(20분 뒤) 새 주문표 기다림
-  // 1) 시한 날
-  if(pos&&pos.last&&now<D.close_ts)acts.push({k:'sell',tag:'오늘이 보유 시한',title:'오늘 마감에 보유 전량 정리',price:null,why:`첫 매수 10거래일째. 매도가 $${fmt(pos.tgt)}에 안 팔리면 마감에 정리합니다. '장마감 시장가(MOC)'로 미리 걸어 두면 끝.`});
-  // 2) 목표가 도달
-  if(pos&&price>=pos.tgt)acts.push({k:'sell',tag:'목표가 도달',title:'지금 팔아도 됩니다',price:pos.tgt,why:`현재가 $${fmt(price)} ≥ 매도선 $${fmt(pos.tgt)} (${base(pos,tp)}). 지정가 걸어 뒀다면 이미 팔렸을 거예요.`});
-  // 3) 마감 신호 / 급락 마감: 애프터마켓 상한
-  if(I.after_cap&&now<D.close_ts){
-    const ok=price<=I.after_cap;
-    acts.push({k:ok?'buy':'wait',tag:I.after_kind,title:ok?'지금 사도 됩니다':`$${fmt(I.after_cap)} 이하로 내려오면 사기`,price:I.after_cap,
-      why:ok?`현재가 $${fmt(price)} ≤ 사는 상한 $${fmt(I.after_cap)} (어제 종가 +0.5%). 규칙상 어제 마감가에 샀어야 할 묶음이라, 이 가격 이하면 같거나 더 싸게 사는 셈.${lotInfo(s,I,price)}`
-        :`어제 마감에 사야 했던 묶음. 지금 $${fmt(price)}은 상한보다 ${pct(price/I.after_cap-1)} 위라 기다립니다.`+(S.close_sig?` 오늘 밤엔 어제 종가 $${fmt(I.prev_close)} 지정가도 함께 걸어요.`:''),
-      gauge:{price,line:I.after_cap,lab:'사는 상한'}});
-  }
-  // 4) 지정가 매수
-  if(P.buy&&now<D.close_ts){
-    const hit=regLow!=null&&regLow<=P.buy, below=price<=P.buy;
-    let a;
-    if(below&&(ph==='regular'||ph==='pre'))a={k:'buy',tag:P.how,title:'지금 사도 됩니다',price:P.buy,why:`현재가 $${fmt(price)}가 매수선 $${fmt(P.buy)} 아래. 지정가를 걸어 뒀다면 체결됐고, 못 걸었다면 지금 사도 규칙보다 같거나 싸게 사는 셈.${lotInfo(s,I,price)}`};
-    else if(hit)a={k:'wait',tag:P.how+' · 오늘 닿았음',title:'지정가 걸었다면 체결됐어요',price:P.buy,why:`오늘 저가 $${fmt(regLow)} ≤ 매수선 $${fmt(P.buy)}. 지금은 $${fmt(price)}(${pct(price/P.buy-1)})로 올라왔어요. 못 샀다면 $${fmt(P.buy)} 이하로 다시 오면 사기.`};
-    else a={k:ph==='regular'?'wait':'buy',tag:P.how,title:ph==='regular'?'매수 지정가 대기 중':'오늘 밤 매수 지정가 걸어 두기',price:P.buy,
-      why:`현재가 $${fmt(price)}에서 ${pct(P.buy/price-1)} 내려오면 체결. 가격은 장중에 안 바뀝니다.${lotInfo(s,I,P.buy)}`};
-    a.gauge={price,line:P.buy,lab:'매수선'};
-    a.then=`체결되면 → 전량 매도 지정가 <b>$${fmt(P.ntgt)}</b>${P.last?' (시한 날이라 새 묶음만)':''}로 걸거나 고치기 · 다음 장 시작 전까지만 하면 됨`;
-    acts.push(a);
-  }
-  // 4-2) 4묶음 다 찬 뒤 오는 신호: 규칙상은 안 사지만 표시(2026-11-18 사용자)
-  if((P.full_buy||P.full_close)&&now<D.close_ts){
-    const line=P.full_close&&ph!=='regular'?P.full_close:(P.full_buy||P.full_close), under=price<=line;
-    const dp=P.full_why==='deep';
-    var fullAct=({k:'warn',tag:dp?'고점 −40% 아래 · 규칙 밖 신호':'4묶음 다 참 · 규칙 밖 신호',title:under?'신호 가격 아래예요 (표시만)':'오늘도 사는 신호가 있어요 (표시만)',price:line,
-      why:dp?`규칙은 −10~−25%에서만 삽니다. ${'2000~ 고점 −40% 아래 신호 회차는 모두 이익(실제 2008-10~2009-02 10번 · 가상 닷컴 2001~02 포함 30번). 단 2001-09처럼 더 빠지면 크게 잃을 수 있어요'}. 샀다면 같은 방식(+목표 전량 매도 · 10거래일 시한)으로 관리.`:`규칙은 4묶음까지라 더 안 삽니다. 여윳돈이 있으면 사도 되는 가격(2000~ 이런 날 17번 모두 3년 뒤 QQQ가 더 높았음). 샀다면 같은 전량 매도에 합쳐 관리.`,
-      gauge:{price,line,lab:'신호 가격'},prio:under});
-  }
-  // 5) 보유 유지
-  if(pos&&price<pos.tgt&&!(pos.last&&now<D.close_ts))acts.push({k:'sell',tag:pos.src==='mine'?'보유 중 (내 평균)':'보유 중 (규칙 추정)',title:'전량 매도 지정가 걸어 두기',price:pos.tgt,
-    why:`${base(pos,tp)}. 현재 ${pct(price/pos.avg-1)}. 시한 ${pos.due?pos.due.slice(5):'–'} 마감. 당일 주문이면 매일 다시 걸기.`,gauge:{price,line:pos.tgt,lab:'매도선'}});
-  if(typeof fullAct!=='undefined'&&fullAct)acts.push(fullAct);
-  if(!acts.length&&!stale){
-    const need=[];
-    if(!S.fear)need.push('어제 마감 공포(공포탐욕 30↓ 또는 VIX 30↑)');
-    if(!S.deep)need.push(`QQQ가 1년 고점 대비 −10~−25% (지금 ${pct(S.dd)}${S.dd<=-0.40?' · −40% 아래라 신호만 표시':S.dd<-0.25?' · −25~−40%는 진짜 패닉 구간이라 안 삼':''})`);
-    acts.push({k:'wait',tag:'할 일 없음',title:'오늘은 사지 않습니다',price:null,why:need.length?'아직 안 맞은 조건: '+need.join(' · '):'조건 대기 중'});
-  }
-  if(stale)acts.unshift({k:'warn',tag:'새 주문표 계산 중',title:'마감 확정 후 새 주문표가 곧 올라와요',price:null,why:'미국 장 마감 20분 뒤(한국 겨울 06:20 · 여름 05:20쯤) 다음 장 주문이 정해집니다. 그 전엔 어제 주문표 기준이에요.'});
-  return acts;
+function mine(s){return store.get('mine_'+s)||{}}
+const won=x=>x>=1e8?(x/1e8).toFixed(2).replace(/\.?0+$/,'')+'억 원':Math.round(x/1e4).toLocaleString()+'만 원';
+const HOW={'마감':'애프터마켓 · 전날 종가','급락':'애프터마켓 · 급락 마감','RSI26':'지정가 · RSI 26','지정가':'지정가'};
+// 애프터마켓에서 사야 하는 차수(전략은 전날 종가 체결로 계산) — 그 장이 끝나기 전까지는 '주문'으로 보여 줌
+function afterLots(s){const I=D.inst[s];if(!I.after_cap||Date.now()/1000>=D.close_ts)return[];return I.lots.map((l,i)=>({l,i})).filter(x=>(x.l.how==='마감'||x.l.how==='급락')&&x.l.d===D.made)}
+function state(s){
+  const I=D.inst[s],P=I.plan,n=I.lots.length,now=Date.now()/1000,pend=now<D.close_ts&&(P.buy||I.after_cap)&&n<4;
+  const m=mine(s),k=m.avg>0&&m.lots!=null?+m.lots:null,lab=k==null?`${n}/4차`:`내 ${k}/4차 · 전략 ${n}/4차`;
+  if(!n&&!k)return pend?['매수 대기','red']:['쉬는 중',''];
+  return pend||afterLots(s).length||(k!=null&&k<n)?[`분할 매수 중 · ${lab}`,'red']:[`보유 중 · ${lab}`,'blue'];
 }
 
 function render(){
   if(!D)return;
-  const now=Date.now()/1000,[ph,phName]=phase(now),I=D.inst[inst];
+  const now=Date.now()/1000,[ph,phName]=phase(now),I=D.inst[inst],price=I.live.price;
   document.querySelectorAll('#instSeg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===inst));
-  const age=now-D.updated, live=ph==='regular';
-  $('meta').innerHTML=`<span class="pill ${live?'live':''}">${phName}</span><span>${D.updated_kst} 갱신</span>`+(age>(live?600:3*3600)?'<span class="pill stale">갱신이 늦어요</span>':'')+
-    `<span>· ${inst} 지금 <b style="color:var(--ink)">$${fmt(I.live.price)}</b> (${pct(I.live.price/I.prev_close-1)})</span>`;
-  const acts=decide(inst);acts.sort((a,b)=>(b.prio?1:0)-(a.prio?1:0));const h=acts[0];
-  const hero=$('hero');hero.className='card hero '+h.k;
-  $('heroTag').textContent=h.tag;$('heroTitle').textContent=h.title;
-  $('heroPrice').textContent=h.price!=null?'$'+fmt(h.price):'';
-  $('heroWhy').textContent=h.why;
-  if(h.then){$('heroThen').hidden=false;$('heroThen').innerHTML=h.then}else $('heroThen').hidden=true;
-  if(h.gauge){$('gauge').hidden=false;const g=h.gauge,lo=Math.min(g.price,g.line)*0.985,hi=Math.max(g.price,g.line)*1.015,x=v=>((v-lo)/(hi-lo)*100).toFixed(1)+'%';
-    const col=h.k==='sell'?css('--sell'):css('--buy');$('gFill').style.cssText=`left:${x(Math.min(g.price,g.line))};width:calc(${x(Math.max(g.price,g.line))} - ${x(Math.min(g.price,g.line))});background:${col};opacity:.35`;
-    $('gMark').style.left=x(g.price);$('gL').textContent=`${g.lab} $${fmt(g.line)}`;$('gR').textContent=`지금 $${fmt(g.price)} (${pct(g.price/g.line-1)})`}
-  else $('gauge').hidden=true;
-  // 주문표
-  const op=new Date(D.open_ts*1000);
-  $('tkSess').textContent=`· ${D.session.slice(5)} 장 (한국 ${kst(D.open_ts)} 시작)`;
-  const tk=[],P=I.plan,pos=position(inst,I);
-  if(I.after_cap)tk.push({k:'b',t:`${I.after_kind} (애프터마켓 · 주간 · 프리마켓)`,s:`어제 종가 +0.5%까지 · 이미 샀으면 건너뛰기`,p:I.after_cap,ps:'까지 지정가'});
-  if(P.buy)tk.push({k:'b',t:`매수 지정가 · ${P.how}`,s:`이 값 이하면 삼 · 더 싸게 열리면 그 값에 체결 · 계좌 ${I.size*100}% 한 묶음${lotInfo(inst,I,P.buy)}`,p:P.buy,ps:'이하 지정가',done:false});
-  if(pos)tk.push({k:'s',t:'보유 전량 매도 지정가',s:`${base(pos,I.tp)} · ${pos.src==='mine'?'내 평균 기준':'규칙 매도선'+(pos.my?` · 내 평단 $${fmt(pos.my.avg)}면 ${pct(pos.tgt/pos.my.avg-1)}`:'')}`,p:pos.tgt,ps:'지정가'});
-  const fw=P.full_why==='deep'?'고점 −40% 아래':'4묶음 다 참';
-  if(P.full_buy)tk.push({k:'w',t:`신호만 · ${fw} (${P.full_how})`,s:P.full_why==='deep'?'규칙 밖 · 지난 깊은 폭락에선 다 이겼지만 표본 적음':'규칙상 더 안 삼 · 여윳돈이면 사도 되는 가격',p:P.full_buy,ps:'표시만',lab:'신호'});
-  if(P.full_close)tk.push({k:'w',t:`신호만 · ${fw} (아침 애프터마켓)`,s:'어제 종가 +0.5%까지 · 규칙상 더 안 삼',p:P.full_close,ps:'표시만',lab:'신호'});
-  if(P.buy&&P.ntgt)tk.push({k:'s',t:'매수 체결되면 매도가 고치기',s:P.last?'시한 날이라 새로 산 수량만':'보유 전량 · 다음 장 전까지',p:P.ntgt,ps:'로 변경'});
-  if(pos&&pos.last)tk.push({k:'w',t:'시한 정리 (장마감 시장가 MOC)',s:'매도가에 안 팔리면 오늘 마감에 들고 있던 수량 전부',p:null,ps:'MOC'});
-  $('tickets').innerHTML=tk.length?tk.map(x=>`<div class="tk ${x.done?'done':''}"><span class="k ${x.k}">${x.lab||(x.k==='b'?'매수':x.k==='s'?'매도':'정리')}</span><span class="t">${x.t}<small>${x.s}</small></span><span class="p">${x.p!=null?'$'+fmt(x.p):''}<small>${x.ps}</small></span></div>`).join('')
-    :'<div class="note" style="margin:0">걸어 둘 주문이 없습니다.</div>';
-  // 조건
-  const S=D.signal,y=(b)=>`<span class="ic ${b?'y':'n'}">${b?'✓':'–'}</span>`;
-  const ck=[[S.fear,'공포',`공포탐욕 ${S.fg!=null?fmt(S.fg,0):'?'} · VIX ${fmt(S.vix,1)} (공포탐욕 30 이하 또는 VIX 30 이상이면 켜짐)`],
-    [S.deep,'하락률 구간',`QQQ 1년 고점 $${fmt(S.hi)} 대비 ${pct(S.dd)} (−10~−25%일 때만 삼 · −40% 아래는 표시만)`],
-    [S.rsi<30,'RSI 30 아래 마감',`RSI ${fmt(S.rsi,1)} → ${S.rsi<30?'마감 두 묶음 + 어제 종가 지정가':`오늘 밤 QQQ RSI ${S.soft?'26':'30'} 가격 $${fmt(S.soft?S.L26:S.L)}에 지정가`}`]];
-  ck.push([S.crash,'급락 마감',`어제 QQQ 하루 ${pct(S.d1)} · 5일 ${pct(S.d5)} (하루 −2.5% & 5일 −7.5%면 한 묶음). 오늘 밤 QQQ $${fmt(S.xline)} 이하 마감이면 내일 아침 한 묶음`]);
-  $('checks').innerHTML=ck.map(([b,t,s])=>`<div class="ck">${y(b)}<div><b>${t}</b><span>${s}</span></div></div>`).join('');
-  const q=D.qqq.live,ql=S.soft?S.L26:S.L;
-  $('qqqRow').innerHTML=`<span>QQQ 지금 <b>$${fmt(q.price)}</b></span><span>${S.soft?'RSI 26':'RSI 30'} 가격 <b>$${fmt(ql)}</b> (${pct(ql/q.price-1)})</span>`+`<span>급락 마감 기준 <b>$${fmt(S.xline)}</b></span>`+(S.hi?`<span>사는 구간(고점 $${fmt(S.hi)}의 −10~−25%) <b>$${fmt(S.hi*0.9)}~$${fmt(S.hi*0.75)}</b> · 지금 ${pct(q.price/S.hi-1)}</span>`:'');
+  $('nm').innerHTML=`${inst}<span>${NAME[inst]||''}</span>`;
+  $('px').textContent='$'+fmt(price);
+  const ch=price-I.prev_close;$('chg').className='chg num '+ud(ch);$('chg').textContent=`전일 대비 ${ch>0?'+':ch<0?'−':''}$${fmt(Math.abs(ch))} (${pct(price/I.prev_close-1)})`;
+  const age=now-D.updated,live=ph==='regular';
+  $('meta').innerHTML=`<span class="chip ${live?'red':''}">${phName}</span><span>${D.updated_kst} 기준</span>`+(age>(live?600:3*3600)?'<span class="chip orange">갱신 지연</span>':'')
+    +(D.qqq&&D.qqq.live?`<span>· QQQ $${fmt(D.qqq.live.price)}${D.signal.hi?` (1년 고점 대비 ${pct(D.qqq.live.price/D.signal.hi-1)})`:''}</span>`:'');
+  const st=state(inst);$('myState').className='chip '+st[1];$('myState').textContent=st[0];
+  renderMy();renderOrders();renderPast();renderFills();renderChecks();
   const m=mine(inst);$('myAvg').value=m.avg||'';$('myQty').value=m.qty||'';$('myCash').value=m.cash||'';$('myLots').value=m.lots!=null?m.lots:'';
-  $('ruleLots').textContent=I.lots.length?`규칙 추정 보유: `+I.lots.map(l=>`${l.d.slice(5)} $${fmt(l.px)} (${l.how})`).join(' · '):'규칙 추정 보유 없음';
-  renderStatus();
-  renderEasy();
   drawChart();
 }
 
-// 2026-11-20 사용자: 겁나는 사람이 보는 판 + 내 포지션 기준. 지금 위치가 과거 회차의 어느 갈래인지 → 여기까지 온 회차는 그 뒤 어떻게 됐는지
-// → 내 평단·산 묶음 수 기준으로 남은 묶음을 어떻게 걸었으면 과거엔 어땠는지(매도선은 늘 규칙 매도선).
-// ROUNDS[i] = [시작일, 팔기 전 최대 하락 %(첫 묶음 대비), 매도가/첫 묶음 가격, 회차 결과 %, 걸린 거래일, 묶음 수]. 실제 가격. scratchpad rounds_data.py
+// 내 주식: 입력한 내 보유가 있으면 그 기준, 없으면 전략 기준(체결 추정). 목표가는 늘 전략 목표가.
+function renderMy(){
+  const I=D.inst[inst],P=I.plan,price=I.live.price,n=I.lots.length,m=mine(inst),mineOn=m.avg>0,fx=D.fx||1450;
+  if(!n&&!mineOn){$('my').innerHTML=`<div class="empty">보유 없음 · 매수 조건이 맞으면 1차 매수부터 시작해요.</div>`;return}
+  const avg=mineOn?+m.avg:P.avg,tgt=n?P.tgt:+(m.avg*(1+I.tp)).toFixed(2),r=price/avg-1,qty=mineOn&&m.qty>0?+m.qty:null;
+  const k=mineOn&&m.lots!=null?+m.lots:n;
+  const rows=[];
+  rows.push(['평균 단가',`$${fmt(avg)}`,mineOn?'입력한 내 평균 단가':'전략 기준 · 체결 추정']);
+  if(mineOn&&n)rows.push(['전략 평균 단가',`$${fmt(P.avg)}`,'목표가는 이 값 기준']);
+  rows.push(['현재가',`$${fmt(price)}`,'']);
+  rows.push(['매수 차수',`${k}/4차`,`비중 ${+(k*I.size*100).toFixed(0)}%${m.cash>0?` · ${won(m.cash*I.size*k)}`:''}`]);
+  if(qty)rows.push(['보유 수량',`${qty.toLocaleString()}주`,`평가금 $${fmt(price*qty)} · 약 ${won(price*qty*fx)}`]);
+  rows.push(['목표가',`$${fmt(tgt)}`,`현재가 대비 ${pct(tgt/price-1)} · 내 수익률 ${pct(tgt/avg-1)}`]);
+  if(n&&P.due)rows.push(['보유 기한',`${P.due.slice(5)} 마감`,P.last?'오늘이 보유 기한':'1차 매수 뒤 10거래일째']);
+  const prog=Math.max(0,Math.min(1,(price-avg*0.9)/(tgt-avg*0.9)));
+  $('my').innerHTML=`<div class="mu" style="font-size:14px;font-weight:600">수익률</div><div class="big num ${ud(r)}">${pct(r)}</div>`
+    +(qty?`<div class="bigsub num ${ud(r)}">${r>=0?'+':'−'}$${fmt(Math.abs((price-avg)*qty))} · 약 ${r>=0?'+':'−'}${won(Math.abs((price-avg)*qty*fx))}</div>`:`<div class="bigsub mu">평균 단가 $${fmt(avg)} 기준</div>`)
+    +`<div class="rows">${rows.map(([a,b,c])=>`<div class="row"><span class="k">${a}</span><span class="v num">${b}${c?`<small>${c}</small>`:''}</span></div>`).join('')}</div>`
+    +`<div class="note" style="margin-top:4px">목표가까지 ${pct(tgt/price-1)} 남았어요</div><div class="bar"><i style="width:${(prog*100).toFixed(0)}%"></i></div>`
+    +(!mineOn&&n?`<div class="note">실제로 산 평균 단가와 매수 차수를 아래 '내 보유 입력'에 넣으면 내 기준으로 바뀌어요.</div>`:'');
+}
+
+// 걸어 둘 주문(미체결). 현재가가 더 낮으면 현재가 기준으로 먼저 말하고, 전략 상한은 보조로.
+function orders(s){
+  const I=D.inst[s],P=I.plan,S=D.signal,now=Date.now()/1000,[ph]=phase(now),price=I.live.price,n=I.lots.length,out=[];
+  const regLow=ph==='regular'||ph==='post'||ph==='after'?I.live.reg_l:null,m=mine(s);
+  const amt=m.cash>0?m.cash*I.size:null,sh=px=>amt?` · 약 ${Math.floor(amt/(px*(D.fx||1450)))}주`:'';
+  if(now>=D.close_ts)return [{side:'info',t:'다음 장 주문을 계산 중',s:'미국 장 마감 20분 뒤(한국 겨울 06:20 · 여름 05:20쯤) 다음 장 주문이 정해져요.',p:null}];
+  const al=afterLots(s),myK=m.avg>0&&m.lots!=null?+m.lots:null;
+  if(myK!=null&&myK<n){
+    const miss=n-myK,cheap=price<P.avg;
+    out.push({side:'buy',t:`놓친 ${myK+1}${miss>1?'~'+n:''}차 따라잡기`,p:price,ps:'현재가 근처 지정가',
+      s:`전략은 이미 ${n}차까지 산 것으로 계산해요(평균 단가 $${fmt(P.avg)}). 나는 ${myK}차까지 샀으니 ${miss}회분이 비어 있어요. `
+        +(cheap?`지금 $${fmt(price)}는 전략 평균보다 ${pct(price/P.avg-1)} 싸서, 지금 사면 전략보다 유리해요 — 목표가 $${fmt(P.tgt)}를 그대로 두면 이 매수분은 ${pct(P.tgt/price-1)}.`
+               :`지금 $${fmt(price)}는 전략 평균보다 비싸요. 전략 평균 $${fmt(P.avg)} 이하로 내려올 때 사면 전략보다 불리하지 않아요.`)
+        +` · 1회 비중 ${I.size*100}% × ${miss}회${amt?` · 약 ${Math.floor(amt*miss/(price*(D.fx||1450)))}주`:''}`});
+  } else if(al.length&&myK==null){
+    const lab=al.map(x=>x.i+1).join('·')+'차 매수',cap=I.after_cap,below=price<=cap;
+    out.push({side:'buy',t:`${lab} · 애프터마켓`,p:below?price:cap,ps:below?'현재가 근처 지정가':'이하 지정가',
+      s:(below?`지금 $${fmt(price)} — 전략은 전날 종가 $${fmt(I.prev_close)}에 산 것으로 계산해요. 지금 가격에 사면 그만큼 더 벌어요. 최대 $${fmt(cap)}까지 전략 범위`
+        :`지금 $${fmt(price)}는 최대 매수가 $${fmt(cap)}보다 ${pct(price/cap-1)} 위 — 내려오면 매수`)+` · 애프터마켓·주간·프리마켓 · 1회 비중 ${I.size*100}%${sh(below?price:cap)} · 이미 샀으면 건너뛰기`});
+  }
+  if(P.buy&&n<4){
+    const hit=regLow!=null&&regLow<=P.buy,lab=`${n+1}차 매수 · ${P.how}`;
+    let sub;
+    if(hit)sub=`오늘 저가 $${fmt(regLow)} ≤ $${fmt(P.buy)} — 걸어 뒀다면 체결됐어요`;
+    else if(price<P.buy)sub=ph==='regular'?`지금 $${fmt(price)} — 걸어 뒀다면 체결됐어요(더 싼 값에)`:`지금 $${fmt(price)} — 장이 열리면 시가 근처에서 체결될 가능성이 높아요. $${fmt(P.buy)}은 '이 값 이하면 산다'는 상한이에요`;
+    else sub=`지금보다 ${pct(P.buy/price-1)} 내려오면 체결`;
+    out.push({side:'buy',t:lab,p:P.buy,ps:hit||price<P.buy&&ph==='regular'?'체결 추정':'이하 지정가',s:sub+` · 1회 비중 ${I.size*100}%${sh(Math.min(price,P.buy))}`});
+  }
+  if(n){
+    const tgt=P.tgt;
+    out.push({side:'sell',t:'보유 전량 매도 · 목표가',p:tgt,ps:'지정가',
+      s:(P.top?`가장 비싸게 산 $${fmt(P.top)} +${+(I.tp*100).toFixed(1)}%`:`평균 단가 $${fmt(P.avg)} +${+(I.tp*100).toFixed(1)}%`)+` · 현재가 대비 ${pct(tgt/price-1)}`
+        +(P.buy&&P.ntgt&&n<4?` · ${n+1}차가 체결되면 $${fmt(P.ntgt)} 이하로 정정(체결가가 낮을수록 더 낮게, 알림이 알려 줘요)`:'')
+        +(m.avg>0?` · 내 평균 단가 $${fmt(m.avg)}면 ${pct(tgt/m.avg-1)}`:'')});
+    if(P.last)out.push({side:'sell',t:'보유 기한 정리 · 장마감 시장가(MOC)',p:null,ps:'',s:'오늘이 보유 기한이에요. 목표가에 안 팔리면 오늘 마감에 들고 있는 수량 전부'});
+  }
+  if(P.full_buy||P.full_close){
+    const dp=P.full_why==='deep';
+    out.push({side:'info',t:`참고 신호 · ${dp?'QQQ 고점 대비 −40% 아래':'4차까지 다 참'}`,p:P.full_buy||P.full_close,ps:'전략 밖',
+      s:dp?'전략은 −10~−25%에서만 매수해요. 과거 깊은 폭락에선 대부분 수익이었지만 사례가 적어요.':'전략상 더 사지 않아요. 여윳돈으로 샀다면 같은 목표가로 함께 관리.'});
+  }
+  return out;
+}
+function renderOrders(){
+  const os=orders(inst),S=D.signal;
+  $('ordSess').textContent=`${D.session.slice(5)} 장 · 한국 ${kst(D.open_ts)} 시작`;
+  if(!os.length){
+    const need=[];if(!S.fear)need.push('공포(공포탐욕 30 이하 또는 VIX 30 이상)');if(!S.deep)need.push(`QQQ 1년 고점 대비 −10~−25% (지금 ${pct(S.dd)})`);
+    $('orders').innerHTML=`<div class="empty">걸어 둘 주문이 없어요.${need.length?' 아직 안 맞은 조건: '+need.join(' · '):''}</div>`;return;
+  }
+  $('orders').innerHTML=os.map(o=>`<div class="ord"><span class="side ${o.side}">${o.side==='buy'?'매수':o.side==='sell'?'매도':'참고'}</span><span class="t">${o.t}</span><span class="p num">${o.p!=null?'$'+fmt(o.p):''}${o.ps?`<small>${o.ps}</small>`:''}</span><span class="s"><span class="t"><small>${o.s}</small></span></span></div>`).join('');
+}
+
+// 체결 내역(전략 기준). 애프터마켓 주문 중인 차수는 위 '걸어 둘 주문'에만.
+function renderFills(){
+  const I=D.inst[inst],price=I.live.price,skip=new Set(afterLots(inst).map(x=>x.i));
+  const rows=I.lots.map((l,i)=>({l,i})).filter(x=>!skip.has(x.i));
+  if(!rows.length){$('fills').innerHTML=`<div class="empty">${skip.size?'애프터마켓 주문이 끝나면 여기에 체결로 들어와요.':'체결 내역이 없어요.'}</div>`;return}
+  $('fills').innerHTML=rows.map(({l,i})=>{const r=price/l.px-1;return `<div class="ord"><span class="side buy">${i+1}차</span><span class="t">매수 체결<small>${l.d.slice(5)} · ${HOW[l.how]||'지정가'}</small></span><span class="p num">$${fmt(l.px)}<small class="${ud(r)}">현재 ${pct(r)}</small></span></div>`}).join('')
+    +`<div class="note">전략대로 샀다고 보고 계산한 체결 내역이에요(실제 체결가는 증권사 앱 기준).</div>`;
+}
+
+function renderChecks(){
+  const S=D.signal,q=D.qqq&&D.qqq.live,y=b=>`<span class="ic ${b?'y':''}">${b?'✓':''}</span>`;
+  $('ckDay').textContent=`${(S.qqq_prev_d||D.made||'').slice(5)} 마감 기준`;
+  const ck=[[S.fear,'공포',`공포탐욕 ${S.fg!=null?fmt(S.fg,0):'?'} · VIX ${fmt(S.vix,1)} (공포탐욕 30 이하 또는 VIX 30 이상)`],
+    [S.deep,'QQQ 하락 구간',`1년 고점 $${fmt(S.hi)} 대비 ${pct(S.dd)} · 매수 구간 $${fmt(S.hi*0.9)}~$${fmt(S.hi*0.75)}(−10~−25%) · 이 아래 마감이면 새로 사지 않아요`],
+    [S.rsi<30,'RSI 30 아래 마감',`QQQ RSI ${fmt(S.rsi,1)} → ${S.rsi<30?'애프터마켓 2회 + 전날 종가 지정가 1회':`QQQ $${fmt(S.soft?S.L26:S.L)}(RSI ${S.soft?26:30} 가격)에 지정가`}`],
+    [S.crash,'급락 마감',`QQQ 하루 ${pct(S.d1)} · 5일 ${pct(S.d5)} (하루 −2.5% & 5일 −7.5%면 애프터마켓 1회) · 오늘 QQQ $${fmt(S.xline)} 이하 마감이면 내일 아침 1회`]];
+  $('checks').innerHTML=ck.map(([b,t,s])=>`<div class="ck">${y(b)}<div><b>${t}</b><span>${s}</span></div></div>`).join('')
+    +(q?`<div class="note">QQQ 지금 $${fmt(q.price)}${S.hi?` · 1년 고점 대비 ${pct(q.price/S.hi-1)}`:''}</div>`:'');
+}
+
+// 과거 비슷한 상황: 1차 매수가 대비 지금 위치 → 과거 거래가 어떻게 갈렸나 → 이만큼 빠진 거래는 어디까지 갔나 → 남은 차수 걸기 비교
+// ROUNDS[i] = [시작일, 매도 전 최대 하락 %(1차 매수가 대비), 매도가/1차 매수가, 거래 수익률 %, 걸린 거래일, 매수 차수]. 실제 가격. scratchpad rounds_data.py
 const ROUNDS={"TQQQ":{"cost":0.0017,"rows":[["2010-05-07",0,1.1262,12.5,1,2],["2010-05-20",-8.9,1.0573,7.3,4,4],["2010-05-26",0,1.0552,7.3,1,3],["2010-06-29",-16.0,1.0287,7.3,8,4],["2010-08-24",-6.1,1.075,7.3,7,1],["2011-08-08",0,1.075,7.3,1,2],["2011-08-09",0,1.075,7.3,1,1],["2011-08-10",0,1.0383,7.3,1,3],["2011-08-19",-1.8,1.0611,7.3,2,3],["2011-10-03",-10.9,1.0246,7.3,2,4],["2011-11-23",-2.3,1.0659,7.3,2,4],["2012-05-18",0,1.075,7.3,1,2],["2012-06-01",-1.8,1.075,7.3,3,3],["2012-11-15",-3.5,1.0871,8.2,3,4],["2015-08-21",-29.0,0.9864,7.3,2,4],["2015-08-25",0,1.0711,7.9,1,3],["2015-09-28",-3.7,1.071,7.3,4,4],["2016-01-13",0,1.075,7.3,1,2],["2016-01-14",-13.8,1.048,7.3,5,4],["2016-02-05",-11.0,1.0753,9.7,7,4],["2018-02-08",-6.8,1.0828,8.1,2,3],["2018-10-10",-7.1,1.075,7.3,4,1],["2018-10-24",0,1.075,7.3,1,2],["2018-10-29",-2.2,1.0996,10.2,2,2],["2018-11-20",0,1.0925,7.9,4,3],["2018-12-17",-23.6,0.9471,-4.0,10,4],["2019-06-03",0,1.075,7.3,1,2],["2020-02-25",-23.2,0.9337,7.3,4,4],["2020-03-02",0,1.1477,14.6,1,1],["2020-03-09",0,1.1048,10.7,1,3],["2020-03-10",0,1.075,7.3,1,1],["2020-03-11",-28.0,0.8901,7.3,2,3],["2020-03-16",0,1.0738,7.3,1,2],["2020-03-18",0,1.075,7.3,1,1],["2020-03-20",-9.1,1.1611,15.9,2,1],["2020-09-08",0,1.075,7.3,1,2],["2020-10-28",0,1.075,7.3,1,2],["2020-11-02",0,1.075,7.3,1,1],["2022-01-21",-15.0,1.0906,9.9,6,4],["2022-02-22",-15.5,1.0771,10.9,3,4],["2022-03-07",0,1.0634,7.3,1,4],["2022-03-08",0,1.0776,7.6,1,2],["2022-04-26",-8.5,1.0223,7.3,2,4],["2022-05-02",0,1.075,7.3,1,1],["2022-05-09",-16.0,1.0216,7.3,6,2],["2022-06-13",-2.4,1.075,7.3,2,1],["2022-06-16",-1.0,1.0897,8.8,2,1],["2023-03-13",0,1.0916,9.0,1,1],["2023-10-26",0,1.0903,8.1,4,4],["2024-08-05",0,1.1685,10.4,1,3],["2024-08-06",-1.2,1.1019,8.0,3,4],["2025-03-10",-4.6,1.07,7.3,5,4],["2025-03-31",0,1.075,7.3,1,1],["2025-04-01",0,1.075,7.3,1,1],["2025-04-03",-33.2,1.0178,7.3,4,4],["2026-03-27",-3.8,1.0687,7.3,2,4],["2026-07-29",0,1.075,7.3,1,2],["2026-11-02",0,1.075,7.3,2,2],["2026-11-05",0,1.1129,9.2,2,4]]},"QLD":{"cost":0.0017,"rows":[["2007-11-09",-5.4,1.0126,4.8,2,3],["2008-01-08",-2.3,1.05,4.8,2,1],["2008-01-11",0,1.05,4.8,1,1],["2008-01-22",-11.0,1.0255,4.8,2,3],["2008-09-15",-13.7,1.054,6.9,4,4],["2008-10-02",0,1.05,4.8,1,1],["2008-10-06",-28.1,0.9411,4.8,5,3],["2008-10-24",-7.8,1.0184,4.8,2,2],["2008-11-12",0,1.05,4.8,1,1],["2008-11-20",0,1.05,4.8,1,1],["2009-02-23",0,1.05,4.8,1,1],["2010-05-07",0,1.0848,8.3,1,2],["2010-05-20",-4.0,1.0381,4.8,2,3],["2010-05-24",-6.6,1.0363,4.8,2,4],["2010-05-26",0,1.0346,4.8,1,3],["2010-06-29",-10.8,1.0192,4.8,8,4],["2010-08-24",-3.9,1.05,4.8,7,1],["2011-08-08",0,1.05,4.8,1,2],["2011-08-09",0,1.05,4.8,1,1],["2011-08-10",0,1.0244,4.8,1,3],["2011-08-19",-1.1,1.0417,4.8,2,3],["2011-10-03",-7.4,1.0171,4.8,2,4],["2011-11-23",-1.4,1.0443,4.8,2,4],["2012-05-18",0,1.05,4.8,1,2],["2012-06-01",-1.2,1.05,4.8,3,3],["2012-11-15",-2.3,1.0589,5.5,3,4],["2015-08-21",0,0.9871,4.8,1,3],["2015-08-24",0,1.0697,6.8,1,2],["2015-08-25",0,1.0452,5.2,1,3],["2015-09-28",-2.5,1.0474,4.8,4,4],["2016-01-13",0,1.05,4.8,1,2],["2016-01-14",-9.2,1.0322,4.8,5,4],["2016-02-05",-7.4,1.0497,6.4,7,4],["2018-02-08",-4.4,1.0544,5.3,2,3],["2018-10-10",-4.7,1.05,4.8,4,1],["2018-10-24",0,1.05,4.8,1,2],["2018-10-29",-1.7,1.0641,6.6,2,2],["2018-11-20",0,1.0619,5.2,4,3],["2018-12-17",-16.1,0.9714,-2.2,10,4],["2019-06-03",0,1.05,4.8,1,2],["2020-02-25",-15.8,0.9584,4.8,4,4],["2020-03-02",0,1.1013,10.0,1,1],["2020-03-09",0,1.0768,7.4,1,3],["2020-03-10",0,1.0552,5.3,1,1],["2020-03-11",-18.7,0.9314,4.8,2,3],["2020-03-16",0,1.0404,4.8,1,2],["2020-03-18",0,1.05,4.8,1,1],["2020-03-20",-6.3,1.1093,10.8,2,1],["2020-09-08",0,1.05,4.8,1,2],["2020-10-28",0,1.05,4.8,1,2],["2020-11-02",0,1.05,4.8,1,1],["2022-01-21",-9.9,1.0627,6.7,6,4],["2022-02-22",-10.4,1.0516,7.1,3,4],["2022-03-07",0,1.0428,4.8,1,4],["2022-03-08",0,1.0527,5.1,1,2],["2022-04-26",-5.6,1.0149,4.8,2,4],["2022-05-02",0,1.0527,5.1,1,1],["2022-05-09",-10.6,1.0185,5.0,6,2],["2022-06-13",-1.5,1.05,4.8,2,1],["2022-06-16",-0.8,1.057,5.5,2,1],["2023-03-13",0,1.0612,5.9,1,1],["2023-10-26",0,1.0601,5.3,4,4],["2024-08-05",0,1.1085,6.8,1,3],["2024-08-06",-0.7,1.0682,5.3,3,4],["2025-03-10",-3.0,1.0468,4.8,5,4],["2025-03-31",0,1.05,4.8,1,1],["2025-04-01",0,1.05,4.8,1,1],["2025-04-03",-22.9,1.0141,4.8,4,4],["2026-03-27",-2.5,1.0459,4.8,2,4],["2026-07-29",0,1.05,4.8,1,2],["2026-11-02",0,1.05,4.8,2,2],["2026-11-05",0,1.05,4.8,1,2],["2026-11-06",0,1.05,4.8,1,2]]}};
-function renderEasy(){
-  const I=D.inst[inst],lots=I.lots,P=I.plan,price=I.live.price,T=ROUNDS[inst],box=$('ezCard');
+function renderPast(){
+  const I=D.inst[inst],lots=I.lots,P=I.plan,price=I.live.price,T=ROUNDS[inst],box=$('pastSec');
   if(!lots.length||!T||!price){box.hidden=true;return}
   box.hidden=false;
   const R=T.rows,N=R.length,C=T.cost,p0=lots[0].px,dd=(price/p0-1)*100,B=Math.min(0,Math.ceil(dd)),m=mine(inst),amt=m.cash>0?m.cash*I.size:1e6;
-  const myOn=m.avg>0&&m.lots!=null,held=myOn?m.lots:lots.length,rem=Math.max(0,4-held);
-  const since=R[0][0].slice(0,4),pc=(a,b)=>Math.round(a/b*100)+'%',px=t=>'$'+fmt(p0*(1+t/100));
-  // 2026-11-20 사용자: QQQ도 보이게 — 상품 가격을 지금 QQQ 가격에서 배수로 환산(대략)
+  const myOn=m.avg>0&&m.lots!=null,held=myOn?+m.lots:lots.length,rem=Math.max(0,4-held);
+  const since=R[0][0].slice(0,4),cnt=(a,b)=>`${a}번 (${Math.round(a/b*100)}%)`,px=t=>'$'+fmt(p0*(1+t/100));
   const S=D.signal,qn=D.qqq&&D.qqq.live&&D.qqq.live.price,qx=t=>qn?'QQQ $'+fmt(qn*(1+(p0*(1+t/100)/price-1)/I.k)):'',pq=t=>px(t)+(qn?' · '+qx(t):'');
-  const won=x=>{const v=amt*x/100/1e4;return (v>=0?'+':'−')+(Math.abs(v)<100?Math.abs(v).toFixed(1):Math.round(Math.abs(v)).toLocaleString())+'만 원'};
-  const row=(label,n,tot,cls='',chip='')=>`<div class="pr ${cls}"><div class="l">${label}${chip?`<span class="chip">${chip}</span>`:''}</div><div class="c">${n}번<small>${pc(n,tot)}</small></div><div class="bar"><i style="width:${Math.max(2,n/tot*100)}%"></i></div></div>`;
-  $('ezTitle').textContent=`지금 상황, 쉽게 · ${inst}`;
-  let h=`<div class="lead">지금 $${fmt(price)} · 규칙상 첫 묶음($${fmt(p0)})보다 <em>${dd<0?(-dd).toFixed(1)+'% 아래':(dd).toFixed(1)+'% 위'}</em>예요.</div>`
-    +(qn&&S.hi?`<div class="sub">QQQ 지금 $${fmt(qn)} · 1년 고점 $${fmt(S.hi)} 대비 <b>${pct(qn/S.hi-1)}</b> · 새 묶음을 사는 마지막 선 QQQ $${fmt(S.hi*0.75)}(−25%, 그 아래 마감이면 새로 안 삼 · 들고 있는 건 그대로)</div>`:'')+`<!--ADV-->`;
-  // ① 갈래
-  const g1=R.filter(r=>r[1]>-2),deep=B<=-3?B:-5,g3=R.filter(r=>r[1]<=deep),g2=N-g1.length-g3.length,q=g1.filter(r=>r[4]<=1).length;
-  const at=B>-2?1:B>deep?2:3;
-  h+=`<div class="sec"><h4>첫 묶음을 산 뒤, 과거 ${N}번은 이렇게 갈렸어요 <small style="color:var(--mute);font-weight:400">(${since}년~)</small></h4>`
-    +row(`바로 올라가서 팔림 <small>(2%도 안 빠짐 · ${q}번은 하루 안에)</small>`,g1.length,N,at===1?'here':'up',at===1?'지금 여기':'')
-    +row(`조금 빠졌다가 올라감 <small>(2~${-deep}% 빠짐)</small>`,g2,N,at===2?'here':'',at===2?'지금 여기':'')
-    +row(`${-deep}% 넘게 빠짐 <small>(${px(deep)} 아래)</small>`,g3.length,N,at===3?'here':'',at===3?'지금 여기':'')+`</div>`;
-  // 내 포지션 한 줄(매도선은 규칙)
-  const mine1=myOn?`<b>내 포지션: ${held}묶음 · 평단 $${fmt(m.avg)}.</b> 규칙 매도선 $${fmt(P.tgt)}에 팔면 <b>${pct(P.tgt/m.avg-1)}</b>(규칙대로 산 경우 +${+(I.tp*100).toFixed(1)}%)${P.ntgt&&P.buy&&held<4?`. 오늘 밤 규칙 묶음이 체결되면 매도선이 내려가요($${fmt(P.buy)}에 사면 $${fmt(P.ntgt)}, 더 싸게 열리면 더 낮게 · 판이 다시 계산)`:''}. `:'';
-  let adv;
+  const w=x=>{const v=amt*x/100/1e4;return (v>=0?'+':'−')+(Math.abs(v)<100?Math.abs(v).toFixed(1):Math.round(Math.abs(v)).toLocaleString())+'만 원'};
+  const br=(label,n,tot,cls='',tag='')=>`<div class="br ${cls}"><div class="top"><span>${label}${tag?`<span class="tag">${tag}</span>`:''}</span><b class="num">${n}번<small class="mu">${Math.round(n/tot*100)}%</small></b></div><div class="bar"><i style="width:${Math.max(2,n/tot*100)}%"></i></div></div>`;
+  $('pastTitle').textContent='과거 비슷한 상황';
+  let h=`<div class="lead">현재가 $${fmt(price)} · 1차 매수가 $${fmt(p0)}보다 <em>${dd<0?(-dd).toFixed(1)+'% 아래':dd.toFixed(1)+'% 위'}</em></div>`
+    +(qn&&S.hi?`<div class="sub">QQQ $${fmt(qn)} · 1년 고점 대비 ${pct(qn/S.hi-1)} · 새로 사는 마지막 선 QQQ $${fmt(S.hi*0.75)}(−25%)</div>`:'')+`<!--BOX-->`;
+  const g1=R.filter(r=>r[1]>-2),deep=B<=-3?B:-5,g3=R.filter(r=>r[1]<=deep),g2=N-g1.length-g3.length,q1=g1.filter(r=>r[4]<=1).length,at=B>-2?1:B>deep?2:3;
+  h+=`<div class="blk"><h3>1차 매수 뒤 과거 ${N}번 거래 <small>(${since}년~)</small></h3>`
+    +br(`바로 반등해서 매도 <small>(2%도 안 빠짐 · ${q1}번은 다음 날까지)</small>`,g1.length,N,at===1?'here':'good',at===1?'지금':'')
+    +br(`조금 빠졌다가 반등 <small>(2~${-deep}%)</small>`,g2,N,at===2?'here':'',at===2?'지금':'')
+    +br(`${-deep}% 넘게 하락 <small>(${px(deep)} 아래)</small>`,g3.length,N,at===3?'here':'',at===3?'지금':'')+`</div>`;
+  const behind=myOn&&held<lots.length;
+  const mine1=myOn?`<b>내 보유: ${held}/4차 · 평균 단가 $${fmt(m.avg)}.</b> 목표가 $${fmt(P.tgt)}에 팔면 <b>${pct(P.tgt/m.avg-1)}</b>(전략대로 샀다면 +${+(I.tp*100).toFixed(1)}%). `
+    +(behind?`전략보다 ${lots.length-held}회 덜 샀어요. 그 ${lots.length-held}회는 전략이 평균 $${fmt(P.avg)}에 산 것으로 치고 있어서, ${price<P.avg?`<b>지금 $${fmt(price)}에 사면 전략보다 싸게 사는 셈</b>이에요 — 매도 시점은 같으니 그만큼 더 벌어요. `:`전략 평균 $${fmt(P.avg)} 이하에서 사면 전략보다 불리하지 않아요. `}`:''):'';
+  let msg;
   if(B>-2){
-    adv=mine1+`지금은 첫 묶음 가격 근처예요. 과거 ${N}번 중 <b>${g1.length}번(${pc(g1.length,N)})은 여기서 더 안 빠지고 바로 올라가 팔렸어요.</b>`+(rem?` 남은 ${rem}묶음은 규칙 주문대로 걸어 두는 자리예요.`:' 매도선까지 기다리는 자리예요.');
+    msg=mine1+`지금은 1차 매수가 근처예요. 과거 ${N}번 거래 중 <b>${cnt(g1.length,N)}은 여기서 더 빠지지 않고 바로 반등해 매도</b>됐어요.`+(rem?` 남은 ${held+1}~4차는 전략 주문대로 걸어 두면 돼요.`:' 목표가까지 기다리면 돼요.');
   } else {
-    const H=R.filter(r=>r[1]<=B),n=H.length,w=H.filter(r=>r[3]>0).length,d3=H.filter(r=>r[1]<=B-3).length;
-    const lv=[B-3,B-5,B-10,B-15,B-20].filter((t,i,a)=>i===0||H.some(r=>r[1]<=a[i-1]));
+    const H=R.filter(r=>r[1]<=B),n=H.length,wn=H.filter(r=>r[3]>0).length,d3=H.filter(r=>r[1]<=B-3).length;
     const days=H.map(r=>r[4]).sort((a,b)=>a-b),med=days[Math.floor((days.length-1)/2)],lose=H.filter(r=>r[3]<=0);
-    // ② 지금처럼 빠진 회차는 그 뒤에
-    // 2026-11-20 사용자: '−8%까지 15번 · −10%까지 12번'처럼 겹쳐 세면 헷갈림 → 회차마다 가장 낮았던 곳 한 칸에만 넣음(다 더하면 n번)
-    const cuts=[B-3,B-5,B-10,B-15,B-20],bk=[[`여기서 바로 올라감 <small>(첫 묶음 −${-B}~−${-cuts[0]}%에서 멈춤)</small>`,H.filter(r=>r[1]>cuts[0]).length,'up']];
+    const cuts=[B-3,B-5,B-10,B-15,B-20],bk=[[`여기서 바로 반등 <small>(−${-B}~−${-cuts[0]}%)</small>`,H.filter(r=>r[1]>cuts[0]).length,'good']];
     for(let i=0;i<cuts.length;i++){const hi=cuts[i],lo=cuts[i+1],c=H.filter(r=>r[1]<=hi&&(lo==null||r[1]>lo)).length;
-      bk.push([lo==null?`첫 묶음 −${-hi}%보다 더 <small>(${px(hi)} 아래${qn?' · '+qx(hi)+' 아래':''})</small>`:`첫 묶음 −${-hi}~−${-lo}%까지 <small>(${px(hi)}~${px(lo)}${qn?' · '+qx(hi)+'~'+qx(lo).slice(4):''})</small>`,c,''])}
+      bk.push([lo==null?`−${-hi}%보다 더 <small>(${px(hi)} 아래${qn?' · '+qx(hi)+' 아래':''})</small>`:`−${-hi}~−${-lo}% <small>(${px(hi)}~${px(lo)}${qn?' · '+qx(hi)+'~'+qx(lo).slice(4):''})</small>`,c,''])}
     while(bk.length>2&&!bk[bk.length-1][1])bk.pop();
-    h+=`<div class="sec"><h4>지금처럼 ${-B}% 넘게 빠졌던 ${n}번은 어디까지 내려갔다가 올라왔나 <small style="color:var(--mute);font-weight:400">(회차마다 가장 낮았던 곳 · 다 더하면 ${n}번)</small></h4>`
-      +bk.map(([l,c,cls])=>row(l,c,n,cls)).join('')
-      +`<div class="verdict">그래도 결국 <b>${n}번 중 ${w}번은 이익으로 끝났어요</b>(팔릴 때까지 보통 ${med}거래일).`
-      +(lose.length?` 진 ${lose.length}번: ${lose.map(r=>`${r[0].slice(0,7)} 회차 ${r[3]}%`).join(', ')}.`:'')+`</div></div>`;
-    // ③ 남은 묶음 걸기 비교(못 산 묶음 0원, 파는 값은 규칙 매도선)
+    h+=`<div class="blk"><h3>이만큼(−${-B}%) 빠졌던 ${n}번, 가장 많이 빠진 곳 <small>(1차 매수가 대비 · 합계 ${n}번)</small></h3>`+bk.map(([l,c,cls])=>br(l,c,n,cls)).join('')
+      +`<div class="ok">그래도 <b>${n}번 중 ${wn}번은 결국 수익으로 매도</b>됐어요 (매도까지 보통 ${med}거래일).`+(lose.length?` 손실 ${lose.length}번: ${lose.map(r=>`${r[0].slice(0,7)} ${r[3]}%`).join(', ')}`:'')+`</div></div>`;
     const lotRet=(r,t)=>r[1]<=t?r[2]/(1+t/100)-1-C:0;
-    const plan=(name,ts)=>{const v=H.map(r=>ts.reduce((a,t)=>a+lotRet(r,t),0)),f=ts.map(t=>H.filter(r=>r[1]<=t).length);
-      return {name,ts,v,avg:v.reduce((a,b)=>a+b,0)/n*100,worst:Math.min(...v)*100,loss:v.filter(x=>x<0).length,none:v.filter(x=>x===0).length,miss:ts.reduce((a,t)=>a+H.filter(r=>r[1]>t).length,0)}};
+    const plan=(name,ts)=>{const v=H.map(r=>ts.reduce((a,t)=>a+lotRet(r,t),0));return {name,ts,v,avg:v.reduce((a,b)=>a+b,0)/n*100,worst:Math.min(...v)*100,loss:v.filter(x=>x<0).length,miss:ts.reduce((a,t)=>a+H.filter(r=>r[1]>t).length,0)}};
     let plans=[];
-    if(rem===1)plans=[plan('지금 근처에서 사기',[B]),plan('조금 아래에 걸기',[B-3]),plan('많이 아래에 걸기',[B-6])];
-    else if(rem>=2)plans=[plan(`${rem}묶음 지금 다 사기`,Array(rem).fill(B)),plan('조금씩 아래로 나눠 걸기',[B,B-3,B-6].slice(0,rem)),plan('넓게 아래로 나눠 걸기',[B,B-5,B-10].slice(0,rem))];
-    let best=null;
-    if(plans.length){const mx=Math.max(...plans.map(x=>x.avg));best=plans.filter(x=>x.avg>=mx-1).sort((a,b)=>b.worst-a.worst)[0]}
-    const where=x=>x.ts.map(t=>t===B?'지금':pq(t)).join(' / ');
+    if(rem===1)plans=[plan('현재가 근처 매수',[B]),plan('조금 아래 지정가',[B-3]),plan('많이 아래 지정가',[B-6])];
+    else if(rem>=2)plans=[plan(`${held+1}~4차 지금 모두 매수`,Array(rem).fill(B)),plan('조금씩 아래로 나눠 지정가',[B,B-3,B-6].slice(0,rem)),plan('넓게 아래로 나눠 지정가',[B,B-5,B-10].slice(0,rem))];
+    let best=null;if(plans.length){const mx=Math.max(...plans.map(x=>x.avg));best=plans.filter(x=>x.avg>=mx-1).sort((a,b)=>b.worst-a.worst)[0]}
+    const where=x=>x.ts.map(t=>t===B?'현재가':pq(t)).join(' / ');
     if(plans.length){
       const dots=x=>`<div class="dots" aria-hidden="true">${x.v.map(v=>v>0?'<i></i>':v<0?'<i class="l"></i>':'<i class="m"></i>').join('')}</div>`;
-      h+=`<div class="sec"><h4>${myOn?'내 포지션 기준, ':''}남은 ${rem}묶음(묶음당 ${Math.round(amt/1e4).toLocaleString()}만 원) 어떻게 걸까</h4>`
-        +plans.map(x=>`<div class="opt${x===best?' best':''}"><div class="t">${x.name}${x===best?'<span class="chip" style="background:var(--buy)">과거엔 가장 나음</span>':''}<small>${where(x)} · 못 산 묶음 ${x.miss}번 · 손해 ${x.loss}번</small></div><div class="v">${won(x.avg)}<small>평균 · 최악 ${won(x.worst)}</small></div>${dots(x)}</div>`).join('')
-        +`<div class="dkey"><span><i></i>그 회차 이익</span><span><i class="l"></i>손해</span><span><i class="m"></i>하나도 못 삼(0원)</span><span>점 하나 = 지난 회차 하나</span></div></div>`;
+      h+=`<div class="blk"><h3>남은 ${rem===1?held+1+'차':`${held+1}~4차`} 매수, 어떻게 걸까 <small>(1회 ${Math.round(amt/1e4).toLocaleString()}만 원 · 목표가는 그대로)</small></h3>`
+        +plans.map(x=>`<div class="plan${x===best?' best':''}"><div class="t">${x.name}${x===best?'<span class="tag" style="background:var(--red)">과거 가장 좋았음</span>':''}<small>${where(x)} · 체결 안 된 주문 ${x.miss}번 · 손실 거래 ${x.loss}번</small></div><div class="v num">${w(x.avg)}<small>평균 · 최악 ${w(x.worst)}</small></div>${dots(x)}</div>`).join('')
+        +`<div class="key"><span><i></i>수익</span><span><i class="l"></i>손실</span><span><i class="m"></i>체결 안 됨(0원)</span><span>점 하나 = 과거 거래 하나</span></div></div>`;
     }
-    adv=mine1+`지금은 과거 ${N}번 중 <b>${pc(n,N)}만 온 '많이 빠진' 쪽</b>이에요. 이 쪽에선 보통 더 빠졌어요(${n}번 중 ${d3}번이 ${px(B-3)} 아래까지). 그래도 <b>${n}번 중 ${w}번은 결국 이익으로 끝났어요.</b>`
-      +(best?` 남은 ${rem}묶음은 <b>${where(best)}</b>${best.ts.length>1?'로 나눠 건':'에 건'} 게 과거엔 가장 나았어요(평균 ${won(best.avg)}, 최악 ${won(best.worst)}).`
-        +(plans[0]!==best?` 지금 다 사면 평균 ${won(plans[0].avg)}, 최악 ${won(plans[0].worst)}이었어요.`:''):' 4묶음을 다 채웠으니 이제는 매도선까지 기다리는 자리예요.');
+    msg=mine1+`지금은 과거 ${N}번 거래 중 <b>${cnt(n,N)}만 이만큼 빠진 경우</b>예요. 이런 때는 보통 더 빠졌어요(${n}번 중 ${d3}번이 ${px(B-3)} 아래까지). 그래도 <b>${n}번 중 ${wn}번은 결국 수익</b>이었어요.`
+      +(best?` 남은 ${rem===1?held+1+'차':`${held+1}~4차`}는 <b>${where(best)}</b>${best.ts.length>1?'로 나눠 건':'에 건'} 게 과거엔 가장 좋았어요(평균 ${w(best.avg)}, 최악 ${w(best.worst)}).`
+        +(plans[0]!==best?` 지금 모두 사면 평균 ${w(plans[0].avg)}, 최악 ${w(plans[0].worst)}이었어요.`:''):' 4차까지 다 샀으니 목표가까지 기다리면 돼요.');
   }
-  h+=`<div class="note">${since}년~ 실제 ${inst} 가격 · 수수료 0.17% 뺀 값 · 파는 값은 규칙 매도선 그대로 · '과거엔 가장 나음'은 평균이 1만 원 안쪽으로 비슷하면 덜 물린 쪽 · 회차 수가 적어 대략적인 경향이에요.${myOn?'':" 아래 '내 실제 보유'에 평균 단가와 산 묶음 수를 넣으면 내 기준으로 바뀝니다."}</div>`;
-  $('ezBody').innerHTML=h.replace('<!--ADV-->',`<div class="advice"><span class="k">지금 상황 풀이 · 과거엔 이랬어요</span>${adv}</div>`);
-}
-// 2026-11-20 사용자: 판을 열면 지금 상태(매수 중/보유 중) · 몇 묶음 · 평균 단가 · 산 내역이 진짜 산 것처럼 바로 보이게
-const HOW={'마감':'마감 신호 · 애프터','급락':'급락 마감 · 애프터','RSI26':'RSI 26 지정가','지정가':'지정가'};
-function stState(s){
-  const I=D.inst[s],P=I.plan,n=I.lots.length,now=Date.now()/1000,pend=now<D.close_ts&&(P.buy||I.after_cap)&&n<4;
-  if(!n)return pend?['매수 시작 대기','buy']:['쉬는 중 · 보유 없음',''];
-  return pend?[`매수 중 · ${n}/4묶음`,'buy']:[`보유 중 · ${n}/4묶음 · 매도 대기`,'sell'];
-}
-function renderStatus(){
-  const I=D.inst[inst],P=I.plan,now=Date.now()/1000,price=I.live.price,lots=I.lots,n=lots.length,m=mine(inst),fx=D.fx||1450;
-  const [pl,cls]=stState(inst);
-  $('stTitle').textContent=`지금 상태 · ${inst}`;$('stPill').className='pill '+cls;$('stPill').textContent=pl;
-  const won=x=>x>=1e8?(x/1e8).toFixed(2).replace(/\.?0+$/,'')+'억 원':Math.round(x/1e4).toLocaleString()+'만 원';
-  const lotAmt=m.cash>0?m.cash*I.size:null;
-  if(n){
-    const avg=P.avg,tgt=P.tgt;
-    $('stGrid').innerHTML=[
-      ['보유',`${n}묶음`,`계좌 ${+(n*I.size*100).toFixed(0)}%`+(lotAmt?` · ${won(lotAmt*n)}`:'')],
-      ['평균 단가',`$${fmt(avg)}`,`지금 $${fmt(price)} (${pct(price/avg-1)})`],
-      ['전량 매도선',`$${fmt(tgt)}`,P.top?`가장 비싼 $${fmt(P.top)} +${+(I.tp*100).toFixed(1)}%`:`평균 +${+(I.tp*100).toFixed(1)}% · 지금보다 ${pct(tgt/price-1)}`],
-      ['시한',P.due?P.due.slice(5):'–','첫 매수 10거래일째 마감']
-    ].map(([a,b,c])=>`<div class="st"><small>${a}</small><b>${b}</b><small>${c}</small></div>`).join('');
-  } else $('stGrid').innerHTML=`<div class="st" style="grid-column:1/-1"><small>보유</small><b>없음</b><small>${stState(inst)[1]==='buy'?'아래 주문이 체결되면 여기 묶음이 쌓입니다':'사는 조건이 맞을 때까지 기다립니다'}</small></div>`;
-  // 산 내역(규칙대로 샀다고 보고 체결 추정) + 아직 남은 매수
-  const rows=lots.map((l,i)=>{
-    const h=HOW[l.how]||l.how, nowLot=(l.how==='마감'||l.how==='급락')&&l.d===D.made&&I.after_cap&&now<D.close_ts;
-    const sh=lotAmt?Math.floor(lotAmt/(l.px*fx))+'주':'', r=price/l.px-1;
-    return `<tr><td class="i">${i+1}</td><td>${l.d.slice(5)}</td><td class="h">${h}${nowLot?'<b>지금 사는 몫</b>':''}</td><td class="n">$${fmt(l.px)}</td>${lotAmt?`<td class="n">${sh}</td>`:''}<td class="n ${r>=0?'up':'dn'}">${pct(r)}</td><td class="ok" title="체결(추정)">✓</td></tr>`});
-  if(P.buy&&now<D.close_ts&&n<4){
-    const sh=lotAmt?Math.floor(lotAmt/(P.buy*fx))+'주':'';
-    rows.push(`<tr class="pend"><td class="i">${n+1}</td><td>${D.session.slice(5)} 밤</td><td class="h">${P.how}</td><td class="n">$${fmt(P.buy)}</td>${lotAmt?`<td class="n">${sh}</td>`:''}<td class="n">–</td><td title="대기">…</td></tr>`);
-  }
-  $('stLots').innerHTML=rows.length?`<table class="lott"><thead><tr><th class="i">#</th><th>날짜</th><th>어떻게</th><th class="n">체결가</th>${lotAmt?'<th class="n">주</th>':''}<th class="n">지금</th><th></th></tr></thead><tbody>${rows.join('')}</tbody></table>`:'';
-  const notes=[];
-  if(n)notes.push('규칙대로 샀다고 보고 계산한 보유(체결 추정)입니다.'+(P.buy&&now<D.close_ts&&n<4&&P.ntgt?` 오늘 밤 매수까지 체결되면 평균 $${fmt(P.navg)} · 매도선 $${fmt(P.ntgt)}로 바뀝니다.`:''));
-  if(m.avg>0&&n){notes.push(`내 실제: ${m.lots!=null?m.lots+'묶음 · ':''}평단 $${fmt(m.avg)} → 규칙 매도선 $${fmt(P.tgt)}에 팔면 ${pct(P.tgt/m.avg-1)} (규칙대로 산 경우 +${+(I.tp*100).toFixed(1)}%).`)}
-  else if(n)notes.push("실제로 산 평균 단가와 묶음 수를 아래 '내 실제 보유'에 넣으면 내 기준 수익과 '지금 상황' 풀이가 나옵니다(매도선은 규칙 그대로).");
-  if(!lotAmt&&n)notes.push("'이 상품에 쓰는 돈'을 넣으면 금액과 주수도 보입니다.");
-  const o=inst==='QLD'?'TQQQ':'QLD',OI=D.inst[o];
-  if(OI)notes.push(`${o}: ${stState(o)[0]}`+(OI.lots.length?` · 평균 $${fmt(OI.plan.avg)} · 매도선 $${fmt(OI.plan.tgt)}`:''));
-  $('stNote').textContent=notes.join(' ');
+  h+=`<div class="note">${since}년~ 실제 ${inst} 가격 · 수수료 0.17% 반영 · 매도는 전략 목표가 그대로 · '과거 가장 좋았음'은 평균이 1만 원 안쪽으로 비슷하면 손실이 덜한 쪽 · 사례가 적어 대략적인 경향이에요.${myOn?'':" '내 보유 입력'에 평균 단가와 매수 차수를 넣으면 내 기준으로 바뀌어요."}</div>`;
+  $('past').innerHTML=h.replace('<!--BOX-->',`<div class="box"><span class="k">지금 상황 풀이 · 과거엔 이랬어요</span>${msg}</div>`);
 }
 
 function drawChart(){
   const I=D.inst[inst],el=$('chart');
-  if(!window.LightweightCharts){el.textContent='그래프를 못 불러왔어요';return}
+  if(!window.LightweightCharts){el.textContent='차트를 못 불러왔어요';return}
   if(!chart){
-    chart=LightweightCharts.createChart(el,{autoSize:true,layout:{background:{type:'solid',color:'transparent'},textColor:css('--sub'),fontFamily:'inherit'},
+    chart=LightweightCharts.createChart(el,{autoSize:true,layout:{background:{type:'solid',color:'transparent'},textColor:css('--mute'),fontFamily:'Pretendard, sans-serif'},
       grid:{vertLines:{visible:false},horzLines:{color:css('--line')}},rightPriceScale:{borderVisible:false},timeScale:{borderVisible:false,timeVisible:true,secondsVisible:false},
       crosshair:{mode:0},handleScroll:true,handleScale:true});
-    series=chart.addCandlestickSeries({upColor:css('--buy'),downColor:css('--sell'),borderVisible:false,wickUpColor:css('--buy'),wickDownColor:css('--sell'),priceLineVisible:false});
+    series=chart.addCandlestickSeries({borderVisible:false,priceLineVisible:false});
   }
-  chart.applyOptions({layout:{textColor:css('--sub')},grid:{horzLines:{color:css('--line')}}});
-  series.applyOptions({upColor:css('--buy'),downColor:css('--sell'),wickUpColor:css('--buy'),wickDownColor:css('--sell')});
+  chart.applyOptions({layout:{textColor:css('--mute')},grid:{horzLines:{color:css('--line')}}});
+  series.applyOptions({upColor:css('--red'),downColor:css('--blue'),wickUpColor:css('--red'),wickDownColor:css('--blue')});
   let data;
   if(range==='day'){const off=9*3600;data=I.live.bars.map(b=>({time:b[0]+off,open:b[1],high:b[2],low:b[3],close:b[4]}))}
   else data=I.daily.map(b=>({time:b[0],open:b[1],high:b[2],low:b[3],close:b[4]}));
   lines.forEach(l=>series.removePriceLine(l));lines=[];LV=[];
-  const P=I.plan,pos=position(inst,I),now=Date.now()/1000,leg=[];
+  const P=I.plan,now=Date.now()/1000,leg=[],n=I.lots.length;
   const add=(price,color,title,style=2)=>{if(price==null)return;LV.push(price);lines.push(series.createPriceLine({price,color,lineWidth:2,lineStyle:style,axisLabelVisible:true,title}));leg.push(`<span><i style="border-color:${color}"></i>${title} $${fmt(price)}</span>`)};
-  if(now<D.close_ts){
-    if(P.buy)add(P.buy,css('--buy'),'매수선');
-    if(P.full_buy)add(P.full_buy,css('--mute'),P.full_why==='deep'?'신호(−40% 아래)':'신호(4묶음 참)',3);
-    if(I.after_cap)add(I.after_cap,css('--warn'),'사는 상한');
-  }
-  if(pos){add(pos.tgt,css('--sell'),'매도선');add(pos.avg,css('--mute'),'평균 단가',1)}
-  else if(P.ntgt&&now<D.close_ts)add(P.ntgt,css('--sell'),'체결되면 매도선',3);
-  // 주문선이 늘 화면 안에 보이게 세로 범위를 넓힘
+  if(now<D.close_ts){if(P.buy&&n<4)add(P.buy,css('--red'),'매수 지정가');if(afterLots(inst).length)add(I.after_cap,css('--orange'),'최대 매수가')}
+  if(n){add(P.tgt,css('--blue'),'목표가');add(P.avg,css('--mute'),'평균 단가',1)}
   series.applyOptions({autoscaleInfoProvider:orig=>{const r=orig();if(!r||!LV.length)return r;const lo=Math.min(r.priceRange.minValue,...LV),hi=Math.max(r.priceRange.maxValue,...LV),pad=(hi-lo)*0.04;return{priceRange:{minValue:lo-pad,maxValue:hi+pad}}}});
   series.setData(data);chart.timeScale().fitContent();
-  $('legend').innerHTML=leg.join('')||'<span>지금 걸린 주문선 없음</span>';
-  $('chartTitle').textContent=`${inst} ${range==='day'?'오늘 (한국 시간)':'최근 3달'}`;
+  $('legend').innerHTML=leg.join('')||'<span>걸린 주문 없음</span>';
+  $('chartTitle').textContent=range==='day'?'오늘 차트':'3개월 차트';
 }
 
 $('instSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;inst=b.dataset.v;store.set('inst',inst);render()});
 $('rangeSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;range=b.dataset.v;document.querySelectorAll('#rangeSeg button').forEach(x=>x.setAttribute('aria-pressed',x===b));drawChart()});
-['myAvg','myLots','myQty','myCash'].forEach(id=>$(id).addEventListener('change',()=>{store.set('mine_'+inst,{avg:parseFloat($('myAvg').value)||null,lots:parseInt($('myLots').value)>=0?Math.min(4,parseInt($('myLots').value)):null,qty:parseFloat($('myQty').value)||null,cash:parseFloat(String($('myCash').value).replace(/,/g,''))||null});render()}));
+['myAvg','myLots','myQty','myCash'].forEach(id=>$(id).addEventListener('change',()=>{const lv=parseInt($('myLots').value);store.set('mine_'+inst,{avg:parseFloat($('myAvg').value)||null,lots:lv>=0?Math.min(4,lv):null,qty:parseFloat($('myQty').value)||null,cash:parseFloat(String($('myCash').value).replace(/,/g,''))||null});render()}));
 $('clearMine').addEventListener('click',()=>{const m=mine(inst);store.set('mine_'+inst,{cash:m.cash||null});render()});
 $('reload').addEventListener('click',load);
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>D&&render());
