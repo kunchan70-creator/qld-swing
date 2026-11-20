@@ -65,6 +65,21 @@ h3{font-size:14px;margin:0 0 10px;color:var(--sub);font-weight:700}
 .mine input{font:inherit;padding:9px 10px;border-radius:9px;border:1px solid var(--line);background:var(--bg);color:var(--ink);width:100%}
 .mine .full{grid-column:1/-1}
 .note{font-size:12.5px;color:var(--mute);margin-top:8px}
+.easy .lead{font-size:16px;font-weight:700;line-height:1.45}
+.easy .lead em{font-style:normal;color:var(--sell)}
+.easy .sub{font-size:13.5px;color:var(--sub);margin-top:4px}
+.opt{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:center;padding:10px 12px;border-radius:10px;background:var(--wait-bg);margin-top:8px}
+.opt .t{font-weight:700}.opt .t small{display:block;font-weight:400;color:var(--mute);font-size:12.5px}
+.opt .v{font-weight:800;font-size:17px;text-align:right;font-variant-numeric:tabular-nums;color:var(--buy)}
+.opt .v small{display:block;font-weight:600;font-size:12px;color:var(--mute)}
+.opt.best{outline:2px solid var(--buy);outline-offset:-2px}
+.dots{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:3px;margin-top:6px}
+.dots i{width:11px;height:11px;border-radius:50%;background:var(--buy)}
+.dots i.l{background:var(--sell)}.dots i.m{background:none;border:1.5px solid var(--mute)}
+.dkey{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--mute);margin-top:8px}
+.dkey i{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--buy);vertical-align:-1px;margin-right:4px}
+.dkey i.l{background:var(--sell)}.dkey i.m{background:none;border:1.5px solid var(--mute)}
+.easy .sum{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:14.5px}
 .btn{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:9px;padding:8px 12px;font:600 13px inherit;cursor:pointer}
 .err{background:var(--warn-bg);color:var(--warn);border-radius:10px;padding:10px 12px;font-size:13.5px;margin-bottom:10px;display:none}
 a{color:var(--sell)}
@@ -102,6 +117,11 @@ a{color:var(--sell)}
     <div class="stgrid" id="stGrid"></div>
     <div class="lotw" id="stLots"></div>
     <div class="note" id="stNote"></div>
+  </div>
+
+  <div class="card easy" id="ezCard" hidden>
+    <h3 id="ezTitle">지금 상황, 쉽게</h3>
+    <div id="ezBody"></div>
   </div>
 
   <div class="card hero wait" id="hero">
@@ -287,9 +307,45 @@ function render(){
   const m=mine(inst);$('myAvg').value=m.avg||'';$('myQty').value=m.qty||'';$('myCash').value=m.cash||'';$('myTop').value=m.top||'';
   $('ruleLots').textContent=I.lots.length?`규칙 추정 보유: `+I.lots.map(l=>`${l.d.slice(5)} $${fmt(l.px)} (${l.how})`).join(' · '):'규칙 추정 보유 없음';
   renderStatus();
+  renderEasy();
   drawChart();
 }
 
+// 2026-11-20 사용자: 지금 상황을 쉽게. 규칙상 첫 묶음보다 얼마나 빠져 있나 → 과거(실제 가격) 같은 처지 회차에서
+// '지금 사기' vs '더 아래에 걸기'를 한 묶음 기준 돈으로. 못 산 회차는 0원. 표는 scratchpad dtable.py (회차 기준·팔기 전까지 저가)
+const DROP={"TQQQ":{"total":59,"calm":34,"since":"2010","rows":[{"b":-2,"n":25,"o":[{"t":-2,"fill":25,"exp":6.6,"avg":6.6,"loss":3},{"t":-5,"fill":18,"exp":6.3,"avg":8.7,"loss":3},{"t":-8,"fill":15,"exp":6.8,"avg":11.3,"loss":1}]},{"b":-3,"n":22,"o":[{"t":-3,"fill":22,"exp":7.2,"avg":7.2,"loss":3},{"t":-6,"fill":18,"exp":8.1,"avg":9.8,"loss":2},{"t":-9,"fill":13,"exp":7.3,"avg":12.3,"loss":1}]},{"b":-5,"n":18,"o":[{"t":-5,"fill":18,"exp":8.7,"avg":8.7,"loss":3},{"t":-8,"fill":15,"exp":9.4,"avg":11.3,"loss":1},{"t":-11,"fill":10,"exp":7.0,"avg":12.7,"loss":1}]},{"b":-7,"n":16,"o":[{"t":-7,"fill":16,"exp":10.4,"avg":10.4,"loss":1},{"t":-10,"fill":12,"exp":9.2,"avg":12.2,"loss":1},{"t":-13,"fill":10,"exp":9.5,"avg":15.2,"loss":0}]},{"b":-10,"n":12,"o":[{"t":-10,"fill":12,"exp":12.2,"avg":12.2,"loss":1},{"t":-13,"fill":10,"exp":12.7,"avg":15.2,"loss":0},{"t":-16,"fill":5,"exp":5.6,"avg":13.5,"loss":0}]},{"b":-13,"n":10,"o":[{"t":-13,"fill":10,"exp":15.2,"avg":15.2,"loss":0},{"t":-16,"fill":5,"exp":6.8,"avg":13.5,"loss":0},{"t":-19,"fill":5,"exp":8.9,"avg":17.7,"loss":0}]},{"b":-16,"n":5,"o":[{"t":-16,"fill":5,"exp":13.5,"avg":13.5,"loss":0},{"t":-19,"fill":5,"exp":17.7,"avg":17.7,"loss":0},{"t":-22,"fill":5,"exp":22.3,"avg":22.3,"loss":0}]},{"b":-20,"n":5,"o":[{"t":-20,"fill":5,"exp":19.2,"avg":19.2,"loss":0},{"t":-23,"fill":5,"exp":23.9,"avg":23.9,"loss":0},{"t":-26,"fill":3,"exp":18.1,"avg":30.2,"loss":0}]}]},"QLD":{"total":73,"calm":45,"since":"2007","rows":[{"b":-2,"n":28,"o":[{"t":-2,"fill":28,"exp":4.7,"avg":4.7,"loss":4},{"t":-5,"fill":19,"exp":4.7,"avg":7.0,"loss":2},{"t":-8,"fill":12,"exp":4.0,"avg":9.3,"loss":0}]},{"b":-3,"n":24,"o":[{"t":-3,"fill":24,"exp":5.4,"avg":5.4,"loss":4},{"t":-6,"fill":17,"exp":5.8,"avg":8.2,"loss":2},{"t":-9,"fill":12,"exp":5.2,"avg":10.5,"loss":0}]},{"b":-5,"n":19,"o":[{"t":-5,"fill":19,"exp":7.0,"avg":7.0,"loss":2},{"t":-8,"fill":12,"exp":5.8,"avg":9.3,"loss":0},{"t":-11,"fill":7,"exp":3.9,"avg":10.5,"loss":0}]},{"b":-7,"n":15,"o":[{"t":-7,"fill":15,"exp":8.5,"avg":8.5,"loss":1},{"t":-10,"fill":10,"exp":7.2,"avg":10.8,"loss":0},{"t":-13,"fill":6,"exp":4.9,"avg":12.3,"loss":0}]},{"b":-10,"n":10,"o":[{"t":-10,"fill":10,"exp":10.8,"avg":10.8,"loss":0},{"t":-13,"fill":6,"exp":7.4,"avg":12.3,"loss":0},{"t":-16,"fill":4,"exp":5.9,"avg":14.7,"loss":0}]},{"b":-13,"n":6,"o":[{"t":-13,"fill":6,"exp":12.3,"avg":12.3,"loss":0},{"t":-16,"fill":4,"exp":9.8,"avg":14.7,"loss":0},{"t":-19,"fill":2,"exp":6.8,"avg":20.5,"loss":0}]},{"b":-16,"n":4,"o":[{"t":-16,"fill":4,"exp":14.7,"avg":14.7,"loss":0},{"t":-19,"fill":2,"exp":10.3,"avg":20.5,"loss":0},{"t":-22,"fill":2,"exp":12.6,"avg":25.2,"loss":0}]},{"b":-20,"n":2,"o":[{"t":-20,"fill":2,"exp":22.0,"avg":22.0,"loss":0},{"t":-23,"fill":1,"exp":11.0,"avg":22.1,"loss":0},{"t":-26,"fill":1,"exp":13.5,"avg":27.0,"loss":0}]}]}};
+function renderEasy(){
+  const I=D.inst[inst],lots=I.lots,price=I.live.price,T=DROP[inst],box=$('ezCard');
+  if(!lots.length||!T||!price){box.hidden=true;return}
+  box.hidden=false;
+  const p0=lots[0].px,dd=(price/p0-1)*100,m=mine(inst),amt=m.cash>0?m.cash*I.size:1e6;
+  const won=x=>{const v=amt*x/100/1e4;return (v>=0?'+':'−')+(Math.abs(v)<100?Math.abs(v).toFixed(1):Math.round(Math.abs(v)).toLocaleString())+'만 원'};
+  const amtTxt=`한 묶음(${Math.round(amt/1e4).toLocaleString()}만 원)씩`;
+  $('ezTitle').textContent=`지금 상황, 쉽게 · ${inst}`;
+  const row=[...T.rows].reverse().find(r=>dd<=r.b+0.5);
+  if(!row){
+    $('ezBody').innerHTML=`<div class="lead">지금 $${fmt(price)} · 규칙상 첫 묶음($${fmt(p0)})과 거의 같은 자리예요.</div>
+      <div class="sub">${T.since}년부터 ${inst} ${T.total}번 회차 중 <b>${T.calm}번(${Math.round(T.calm/T.total*100)}%)</b>은 첫 묶음보다 2%도 더 안 빠지고 팔렸어요. 보통은 바로 반등한다는 뜻이에요.</div>`;
+    return;
+  }
+  const n=row.n,dots=o=>{let h='';for(let i=0;i<n;i++)h+=i<o.fill-o.loss?'<i></i>':i<o.fill?'<i class="l"></i>':'<i class="m"></i>';return `<div class="dots" aria-hidden="true">${h}</div>`};
+  const best=Math.max(...row.o.map(o=>o.exp));
+  const lab=['지금 근처에서 사기','조금 더 아래에 걸기','많이 아래에 걸기'];
+  const opts=row.o.map((o,k)=>{const px=p0*(1+o.t/100),miss=n-o.fill;
+    return `<div class="opt${o.exp===best?' best':''}"><div class="t">${lab[k]} · $${fmt(px)}<small>${k?`첫 묶음 −${-o.t}% · ${n}번 중 ${o.fill}번 삼, ${miss}번은 안 내려와 못 삼`:`${n}번 모두 삼`} · 손해 ${o.loss}번</small></div>
+      <div class="v">${won(o.exp)}<small>${k?`평균 · 산 때만 ${won(o.avg)}`:'평균'}</small></div>${dots(o)}</div>`}).join('');
+  const [o0,o1,o2]=row.o,d01=o1.exp-o0.exp;
+  let sum=Math.abs(d01)<=1?`<b>지금 사나 조금 아래(−${-o1.t}%)에 거나 버는 돈은 거의 같아요.</b> 아래에 걸면 손해가 ${o0.loss}번 → ${o1.loss}번으로 줄고, 대신 ${n-o1.fill}번은 못 사고 지나가요.`
+    :d01>0?`<b>조금 아래(−${-o1.t}%)에 건 쪽이 더 벌었어요.</b> ${n}번 중 ${o1.fill}번은 거기까지 내려왔고 싸게 산 만큼 더 벌었어요. 대신 ${n-o1.fill}번은 못 사고 지나가요.`
+    :`<b>지금 사는 쪽이 더 벌었어요.</b> 아래에 걸면 ${n-o1.fill}번은 못 사고 지나가서예요. 대신 아래에 걸면 손해가 ${o0.loss}번 → ${o1.loss}번으로 줄어요.`;
+  if(o2.exp<Math.max(o0.exp,o1.exp)-1)sum+=` 많이 아래(−${-o2.t}%)는 못 사는 때가 많아 오히려 덜 벌었어요.`;
+  $('ezBody').innerHTML=`<div class="lead">지금 $${fmt(price)} · 규칙상 첫 묶음($${fmt(p0)})보다 <em>${(-dd).toFixed(1)}% 아래</em>예요.</div>
+    <div class="sub">${T.since}년부터 ${inst} ${T.total}번 회차 중, 이렇게 <b>첫 묶음보다 ${-row.b}% 넘게 빠진 적이 ${n}번</b> 있었어요. 그 ${n}번에 ${amtTxt} 이렇게 샀다면:</div>
+    ${opts}
+    <div class="dkey"><span><i></i>이익</span><span><i class="l"></i>손해</span><span><i class="m"></i>못 삼(0원)</span><span>점 하나 = 지난 회차 하나</span></div>
+    <div class="sum">${sum}</div>
+    <div class="note">파는 값은 셋 다 규칙 매도선 그대로예요(싸게 사도 매도선을 안 내리면 팔리는 때는 같고 더 법니다). 지난 ${n}번뿐이라 대략적인 경향이에요${n<8?' — 특히 지금은 사례가 적어요':''}. 실제 ${inst} 가격, 수수료 0.17% 뺀 값.</div>`;
+}
 // 2026-11-20 사용자: 판을 열면 지금 상태(매수 중/보유 중) · 몇 묶음 · 평균 단가 · 산 내역이 진짜 산 것처럼 바로 보이게
 const HOW={'마감':'마감 신호 · 애프터','급락':'급락 마감 · 애프터','RSI26':'RSI 26 지정가','지정가':'지정가'};
 function stState(s){
@@ -325,7 +381,7 @@ function renderStatus(){
   const notes=[];
   if(n)notes.push('규칙대로 샀다고 보고 계산한 보유(체결 추정)입니다.'+(P.buy&&now<D.close_ts&&n<4&&P.ntgt?` 오늘 밤 매수까지 체결되면 평균 $${fmt(P.navg)} · 매도선 $${fmt(P.ntgt)}로 바뀝니다.`:''));
   if(m.avg>0&&m.qty>0){const p=position(inst,I);notes.push(`내 실제 보유 입력값 우선: 평균 $${fmt(p.avg)} · ${p.qty}주 → 매도선 $${fmt(p.tgt)}.`)}
-  else if(n)notes.push("실제 체결가가 다르면 아래 '내 실제 보유'에 넣으면 매도선이 다시 계산됩니다.");
+  else if(n)notes.push("규칙보다 싸게 샀다면 매도선은 그대로 두는 게 유리해요(팔리는 때는 같고 더 법니다). '내 실제 보유'에 넣으면 매도선이 내 평균 기준으로 내려가요.");
   if(!lotAmt&&n)notes.push("'이 상품에 쓰는 돈'을 넣으면 금액과 주수도 보입니다.");
   const o=inst==='QLD'?'TQQQ':'QLD',OI=D.inst[o];
   if(OI)notes.push(`${o}: ${stState(o)[0]}`+(OI.lots.length?` · 평균 $${fmt(OI.plan.avg)} · 매도선 $${fmt(OI.plan.tgt)}`:''));
