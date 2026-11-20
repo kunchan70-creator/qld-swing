@@ -91,6 +91,8 @@ h3{font-size:14px;margin:0 0 10px;color:var(--sub);font-weight:700}
 .chip{display:inline-block;font-size:11.5px;font-weight:800;color:#fff;background:var(--sell);border-radius:6px;padding:1px 6px;margin-left:6px;vertical-align:1px}
 .verdict{margin-top:8px;padding:10px 12px;border-radius:10px;background:var(--buy-bg);font-size:14.5px}
 .verdict b{color:var(--buy)}
+.advice{margin-top:10px;padding:12px 14px;border-radius:12px;background:var(--wait-bg);border-left:4px solid var(--sell);font-size:15px;line-height:1.6}
+.advice b{color:var(--ink)}.advice .k{display:block;font-size:12px;font-weight:800;color:var(--sell);margin-bottom:2px}
 .btn{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:9px;padding:8px 12px;font:600 13px inherit;cursor:pointer}
 .err{background:var(--warn-bg);color:var(--warn);border-radius:10px;padding:10px 12px;font-size:13.5px;margin-bottom:10px;display:none}
 a{color:var(--sell)}
@@ -334,7 +336,7 @@ function renderEasy(){
   const won=x=>{const v=amt*x/100/1e4;return (v>=0?'+':'−')+(Math.abs(v)<100?Math.abs(v).toFixed(1):Math.round(Math.abs(v)).toLocaleString())+'만 원'};
   const row=(label,n,tot,cls='',chip='')=>`<div class="pr ${cls}"><div class="l">${label}${chip?`<span class="chip">${chip}</span>`:''}</div><div class="c">${n}번<small>${pc(n,tot)}</small></div><div class="bar"><i style="width:${Math.max(2,n/tot*100)}%"></i></div></div>`;
   $('ezTitle').textContent=`지금 상황, 쉽게 · ${inst}`;
-  let h=`<div class="lead">지금 $${fmt(price)} · 규칙상 첫 묶음($${fmt(p0)})보다 <em>${dd<0?(-dd).toFixed(1)+'% 아래':(dd).toFixed(1)+'% 위'}</em>예요.</div>`;
+  let h=`<div class="lead">지금 $${fmt(price)} · 규칙상 첫 묶음($${fmt(p0)})보다 <em>${dd<0?(-dd).toFixed(1)+'% 아래':(dd).toFixed(1)+'% 위'}</em>예요.</div><!--ADV-->`;
   // ① 갈래: 첫 묶음 산 뒤 과거 N번은 어떻게 갈렸나
   const g1=R.filter(r=>r[1]>-2),deep=B<=-3?B:-5,g3=R.filter(r=>r[1]<=deep),g2=N-g1.length-g3.length,q=g1.filter(r=>r[4]<=1).length;
   const at=B>-2?1:B>deep?2:3;
@@ -363,6 +365,25 @@ function renderEasy(){
       +opts.map((o,k)=>`<div class="opt${o.exp===best?' best':''}"><div class="t">${lab[k]} · ${px(o.t)}<small>${o.fill===n?`${n}번 다 삼`:`${n}번 중 ${o.fill}번 삼 · ${n-o.fill}번 못 삼`} · 손해 ${o.loss}번</small></div><div class="v">${won(o.exp)}<small>평균</small></div>${dots(o)}</div>`).join('')
       +`<div class="dkey"><span><i></i>이익</span><span><i class="l"></i>손해</span><span><i class="m"></i>안 내려와서 못 삼(0원)</span></div></div>`;
   }
+  // 2026-11-20 사용자: 상황을 이해시키는 풀이 문장(지금 어느 갈래 → 과거엔 어땠나 → 남은 묶음은 어떻게 걸면 어땠나). 과거 숫자만 말함
+  const rem=Math.max(0,4-lots.length);let adv;
+  if(B>-2){
+    adv=`지금은 첫 묶음 가격 근처예요. 과거 ${N}번 중 <b>${g1.length}번(${pc(g1.length,N)})은 여기서 더 안 빠지고 바로 올라가 팔렸어요.</b> 걸어 둔 매도 주문을 그대로 두고 기다리는 자리예요.`;
+  } else {
+    const H=R.filter(r=>r[1]<=B),n=H.length,w=H.filter(r=>r[3]>0).length,d3=H.filter(r=>r[1]<=B-3).length;
+    const lotRet=(r,t)=>r[1]<=t?r[2]/(1+t/100)-1-C:0;
+    const plan=ts=>{const v=H.map(r=>ts.reduce((a,t)=>a+lotRet(r,t),0));return {avg:v.reduce((a,b)=>a+b,0)/n*100,worst:Math.min(...v)*100}};
+    let tail='';
+    if(rem>=2){
+      const lv=[B,B-3,B-10].slice(0,rem),all=plan(Array(rem).fill(B)),spl=plan(lv);
+      tail=` 남은 ${rem}묶음을 <b>지금 다 사면</b> 평균 ${won(all.avg)}, 최악 ${won(all.worst)}이었고, <b>${lv.map(t=>t===B?'지금':`−${-t}%(${px(t)})`).join(' · ')}로 나눠 걸면</b> 평균 ${won(spl.avg)}, 최악 ${won(spl.worst)}이었어요. `+(spl.worst>all.worst+0.5?(spl.avg>=all.avg-0.5?'나눠 걸어도 버는 돈은 비슷했고 <b>물리는 건 크게 줄었어요.</b>':'나눠 걸면 조금 덜 벌고 <b>물리는 건 크게 줄었어요.</b>'):'어느 쪽이든 크게 다르지 않았어요.');
+    } else if(rem===1){
+      const a0=plan([B]),a1=plan([B-3]);
+      tail=` 남은 1묶음은 지금 근처에 사면 평균 ${won(a0.avg)}, −${3-B}%(${px(B-3)})에 걸면 평균 ${won(a1.avg)}이었어요(${n-H.filter(r=>r[1]<=B-3).length}번은 안 내려와 못 삼). `+(Math.abs(a1.avg-a0.avg)<=1?'<b>버는 돈은 거의 같고, 아래에 걸면 덜 물려요.</b>':a1.avg>a0.avg?'<b>조금 아래에 건 쪽이 더 벌었어요.</b>':'<b>지금 사는 쪽이 더 벌었어요.</b>');
+    } else tail=' 규칙상 4묶음을 다 채웠어요. 이제는 매도선까지 기다리는 자리예요.';
+    adv=`지금은 과거 ${N}번 중 <b>${pc(n,N)}만 온 '많이 빠진' 쪽</b>이에요. 이 쪽에선 보통 더 빠졌어요(${n}번 중 ${d3}번이 ${px(B-3)} 아래까지). 그래도 <b>${n}번 중 ${w}번은 결국 이익으로 끝났어요.</b>`+tail;
+  }
+  h=h.replace('<!--ADV-->',`<div class="advice"><span class="k">지금 상황 풀이 · 과거엔 이랬어요</span>${adv}</div>`);
   h+=`<div class="note">${since}년~ 실제 ${inst} 가격 · 수수료 0.17% 뺀 값 · 파는 값은 규칙 매도선 그대로(싸게 사도 매도선을 안 내리면 팔리는 때는 같고 더 법니다) · 회차 수가 적어 대략적인 경향이에요.</div>`;
   $('ezBody').innerHTML=h;
 }
