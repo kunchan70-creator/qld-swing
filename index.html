@@ -266,7 +266,7 @@ function render(){
   $('tkSess').textContent=`· ${D.session.slice(5)} 장 (한국 ${kst(D.open_ts)} 시작)`;
   const tk=[],P=I.plan,pos=position(inst,I);
   if(I.after_cap)tk.push({k:'b',t:`${I.after_kind} (애프터마켓 · 주간 · 프리마켓)`,s:`어제 종가 +0.5%까지 · 이미 샀으면 건너뛰기`,p:I.after_cap,ps:'까지 지정가'});
-  if(P.buy)tk.push({k:'b',t:`매수 지정가 · ${P.how}`,s:`계좌 ${I.size*100}% 한 묶음${lotInfo(inst,I,P.buy)}`,p:P.buy,ps:'지정가',done:false});
+  if(P.buy)tk.push({k:'b',t:`매수 지정가 · ${P.how}`,s:`이 값 이하면 삼 · 더 싸게 열리면 그 값에 체결 · 계좌 ${I.size*100}% 한 묶음${lotInfo(inst,I,P.buy)}`,p:P.buy,ps:'이하 지정가',done:false});
   if(pos)tk.push({k:'s',t:'보유 전량 매도 지정가',s:`${base(pos,I.tp)} · ${pos.src==='mine'?'내 평균 기준':'규칙 추정 '+pos.n+'묶음'}`,p:pos.tgt,ps:'지정가'});
   const fw=P.full_why==='deep'?'고점 −40% 아래':'4묶음 다 참';
   if(P.full_buy)tk.push({k:'w',t:`신호만 · ${fw} (${P.full_how})`,s:P.full_why==='deep'?'규칙 밖 · 지난 깊은 폭락에선 다 이겼지만 표본 적음':'규칙상 더 안 삼 · 여윳돈이면 사도 되는 가격',p:P.full_buy,ps:'표시만',lab:'신호'});
