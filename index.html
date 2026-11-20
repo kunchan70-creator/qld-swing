@@ -318,7 +318,7 @@ function render(){
   ck.push([S.crash,'급락 마감',`어제 QQQ 하루 ${pct(S.d1)} · 5일 ${pct(S.d5)} (하루 −2.5% & 5일 −7.5%면 한 묶음). 오늘 밤 QQQ $${fmt(S.xline)} 이하 마감이면 내일 아침 한 묶음`]);
   $('checks').innerHTML=ck.map(([b,t,s])=>`<div class="ck">${y(b)}<div><b>${t}</b><span>${s}</span></div></div>`).join('');
   const q=D.qqq.live,ql=S.soft?S.L26:S.L;
-  $('qqqRow').innerHTML=`<span>QQQ 지금 <b>$${fmt(q.price)}</b></span><span>${S.soft?'RSI 26':'RSI 30'} 가격 <b>$${fmt(ql)}</b> (${pct(ql/q.price-1)})</span>`+`<span>급락 마감 기준 <b>$${fmt(S.xline)}</b></span>`;
+  $('qqqRow').innerHTML=`<span>QQQ 지금 <b>$${fmt(q.price)}</b></span><span>${S.soft?'RSI 26':'RSI 30'} 가격 <b>$${fmt(ql)}</b> (${pct(ql/q.price-1)})</span>`+`<span>급락 마감 기준 <b>$${fmt(S.xline)}</b></span>`+(S.hi?`<span>사는 구간(고점 $${fmt(S.hi)}의 −10~−25%) <b>$${fmt(S.hi*0.9)}~$${fmt(S.hi*0.75)}</b> · 지금 ${pct(q.price/S.hi-1)}</span>`:'');
   const m=mine(inst);$('myAvg').value=m.avg||'';$('myQty').value=m.qty||'';$('myCash').value=m.cash||'';$('myLots').value=m.lots!=null?m.lots:'';
   $('ruleLots').textContent=I.lots.length?`규칙 추정 보유: `+I.lots.map(l=>`${l.d.slice(5)} $${fmt(l.px)} (${l.how})`).join(' · '):'규칙 추정 보유 없음';
   renderStatus();
@@ -337,10 +337,13 @@ function renderEasy(){
   const R=T.rows,N=R.length,C=T.cost,p0=lots[0].px,dd=(price/p0-1)*100,B=Math.min(0,Math.ceil(dd)),m=mine(inst),amt=m.cash>0?m.cash*I.size:1e6;
   const myOn=m.avg>0&&m.lots!=null,held=myOn?m.lots:lots.length,rem=Math.max(0,4-held);
   const since=R[0][0].slice(0,4),pc=(a,b)=>Math.round(a/b*100)+'%',px=t=>'$'+fmt(p0*(1+t/100));
+  // 2026-11-20 사용자: QQQ도 보이게 — 상품 가격을 지금 QQQ 가격에서 배수로 환산(대략)
+  const S=D.signal,qn=D.qqq&&D.qqq.live&&D.qqq.live.price,qx=t=>qn?'QQQ $'+fmt(qn*(1+(p0*(1+t/100)/price-1)/I.k)):'',pq=t=>px(t)+(qn?' · '+qx(t):'');
   const won=x=>{const v=amt*x/100/1e4;return (v>=0?'+':'−')+(Math.abs(v)<100?Math.abs(v).toFixed(1):Math.round(Math.abs(v)).toLocaleString())+'만 원'};
   const row=(label,n,tot,cls='',chip='')=>`<div class="pr ${cls}"><div class="l">${label}${chip?`<span class="chip">${chip}</span>`:''}</div><div class="c">${n}번<small>${pc(n,tot)}</small></div><div class="bar"><i style="width:${Math.max(2,n/tot*100)}%"></i></div></div>`;
   $('ezTitle').textContent=`지금 상황, 쉽게 · ${inst}`;
-  let h=`<div class="lead">지금 $${fmt(price)} · 규칙상 첫 묶음($${fmt(p0)})보다 <em>${dd<0?(-dd).toFixed(1)+'% 아래':(dd).toFixed(1)+'% 위'}</em>예요.</div><!--ADV-->`;
+  let h=`<div class="lead">지금 $${fmt(price)} · 규칙상 첫 묶음($${fmt(p0)})보다 <em>${dd<0?(-dd).toFixed(1)+'% 아래':(dd).toFixed(1)+'% 위'}</em>예요.</div>`
+    +(qn&&S.hi?`<div class="sub">QQQ 지금 $${fmt(qn)} · 1년 고점 $${fmt(S.hi)} 대비 <b>${pct(qn/S.hi-1)}</b> · 새 묶음을 사는 마지막 선 QQQ $${fmt(S.hi*0.75)}(−25%, 그 아래 마감이면 새로 안 삼 · 들고 있는 건 그대로)</div>`:'')+`<!--ADV-->`;
   // ① 갈래
   const g1=R.filter(r=>r[1]>-2),deep=B<=-3?B:-5,g3=R.filter(r=>r[1]<=deep),g2=N-g1.length-g3.length,q=g1.filter(r=>r[4]<=1).length;
   const at=B>-2?1:B>deep?2:3;
@@ -361,7 +364,7 @@ function renderEasy(){
     // 2026-11-20 사용자: '−8%까지 15번 · −10%까지 12번'처럼 겹쳐 세면 헷갈림 → 회차마다 가장 낮았던 곳 한 칸에만 넣음(다 더하면 n번)
     const cuts=[B-3,B-5,B-10,B-15,B-20],bk=[[`여기서 바로 올라감 <small>(첫 묶음 −${-B}~−${-cuts[0]}%에서 멈춤)</small>`,H.filter(r=>r[1]>cuts[0]).length,'up']];
     for(let i=0;i<cuts.length;i++){const hi=cuts[i],lo=cuts[i+1],c=H.filter(r=>r[1]<=hi&&(lo==null||r[1]>lo)).length;
-      bk.push([lo==null?`첫 묶음 −${-hi}%보다 더 <small>(${px(hi)} 아래)</small>`:`첫 묶음 −${-hi}~−${-lo}%까지 <small>(${px(hi)}~${px(lo)})</small>`,c,''])}
+      bk.push([lo==null?`첫 묶음 −${-hi}%보다 더 <small>(${px(hi)} 아래${qn?' · '+qx(hi)+' 아래':''})</small>`:`첫 묶음 −${-hi}~−${-lo}%까지 <small>(${px(hi)}~${px(lo)}${qn?' · '+qx(hi)+'~'+qx(lo).slice(4):''})</small>`,c,''])}
     while(bk.length>2&&!bk[bk.length-1][1])bk.pop();
     h+=`<div class="sec"><h4>지금처럼 ${-B}% 넘게 빠졌던 ${n}번은 어디까지 내려갔다가 올라왔나 <small style="color:var(--mute);font-weight:400">(회차마다 가장 낮았던 곳 · 다 더하면 ${n}번)</small></h4>`
       +bk.map(([l,c,cls])=>row(l,c,n,cls)).join('')
@@ -376,7 +379,7 @@ function renderEasy(){
     else if(rem>=2)plans=[plan(`${rem}묶음 지금 다 사기`,Array(rem).fill(B)),plan('조금씩 아래로 나눠 걸기',[B,B-3,B-6].slice(0,rem)),plan('넓게 아래로 나눠 걸기',[B,B-5,B-10].slice(0,rem))];
     let best=null;
     if(plans.length){const mx=Math.max(...plans.map(x=>x.avg));best=plans.filter(x=>x.avg>=mx-1).sort((a,b)=>b.worst-a.worst)[0]}
-    const where=x=>x.ts.map(t=>t===B?'지금':px(t)).join(' · ');
+    const where=x=>x.ts.map(t=>t===B?'지금':pq(t)).join(' / ');
     if(plans.length){
       const dots=x=>`<div class="dots" aria-hidden="true">${x.v.map(v=>v>0?'<i></i>':v<0?'<i class="l"></i>':'<i class="m"></i>').join('')}</div>`;
       h+=`<div class="sec"><h4>${myOn?'내 포지션 기준, ':''}남은 ${rem}묶음(묶음당 ${Math.round(amt/1e4).toLocaleString()}만 원) 어떻게 걸까</h4>`
