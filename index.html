@@ -184,7 +184,9 @@ async function load(){
   $('err').style.display='none';
   for(const u of SRC){
     try{const r=await fetch(u,{cache:'no-cache',headers:u.includes('api.github.com')?{Accept:'application/vnd.github.raw+json'}:{}});
-      if(!r.ok)continue;D=await r.json();lastFetch=Date.now();render();return}catch(e){}
+      if(!r.ok)continue;D=await r.json();lastFetch=Date.now();
+      for(const s in D.inst){const I=D.inst[s],L=I.lots||[];I.res=L.find(l=>l.how==='예비')||null;I.lots=L.filter(l=>l.how!=='예비')}   // 예비 매수분은 4차·목표가 계산에서 뺌
+      render();return}catch(e){}
   }
   $('err').textContent='데이터를 못 불러왔어요. 잠시 뒤 새로고침하거나 폰 알림을 따라 주세요.';$('err').style.display='block';
 }
@@ -198,7 +200,7 @@ function phase(now){
 }
 function mine(s){return store.get('mine_'+s)||{}}
 const won=x=>x>=1e8?(x/1e8).toFixed(2).replace(/\.?0+$/,'')+'억 원':Math.round(x/1e4).toLocaleString()+'만 원';
-const HOW={'마감':'애프터마켓 · 전날 종가','급락':'애프터마켓 · 급락 마감','RSI26':'지정가 · RSI 26','지정가':'지정가'};
+const HOW={'예비':'예비 매수 · 1차 −15% 아래','마감':'애프터마켓 · 전날 종가','급락':'애프터마켓 · 급락 마감','RSI26':'지정가 · RSI 26','지정가':'지정가'};
 // 애프터마켓에서 사야 하는 차수(전략은 전날 종가 체결로 계산) — 그 장이 끝나기 전까지는 '주문'으로 보여 줌
 function afterLots(s){const I=D.inst[s];if(!I.after_cap||Date.now()/1000>=D.close_ts)return[];return I.lots.map((l,i)=>({l,i})).filter(x=>(x.l.how==='마감'||x.l.how==='급락')&&x.l.d===D.made)}
 function state(s){
@@ -237,6 +239,7 @@ function renderMy(){
   rows.push(['매수 차수',`${k}/4차`,`비중 ${+(k*I.size*100).toFixed(0)}%${m.cash>0?` · ${won(m.cash*I.size*k)}`:''}`]);
   if(qty)rows.push(['보유 수량',`${qty.toLocaleString()}주`,`평가금 $${fmt(price*qty)} · 약 ${won(price*qty*fx)}`]);
   rows.push(['목표가',`$${fmt(tgt)}`,`현재가 대비 ${pct(tgt/price-1)} · 내 수익률 ${pct(tgt/avg-1)}`]);
+  if(I.res)rows.push(['예비 매수',`$${fmt(I.res.px)}`,`4차와 따로 1회 · 목표가에 같이 매도 → ${pct(tgt/I.res.px-1)}`]);
   if(n&&P.due)rows.push(['보유 기한',`${P.due.slice(5)} 마감`,P.last?'오늘이 보유 기한':'1차 매수 뒤 10거래일째']);
   const prog=Math.max(0,Math.min(1,(price-avg*0.9)/(tgt-avg*0.9)));
   $('my').innerHTML=`<div class="mu" style="font-size:14px;font-weight:600">수익률</div><div class="big num ${ud(r)}">${pct(r)}</div>`
@@ -274,15 +277,27 @@ function orders(s){
     else sub=`지금보다 ${pct(P.buy/price-1)} 내려오면 체결`;
     out.push({side:'buy',t:lab,p:P.buy,ps:hit||price<P.buy&&ph==='regular'?'체결 추정':'이하 지정가',s:sub+` · 1회 비중 ${I.size*100}%${sh(Math.min(price,P.buy))}`});
   }
+  // 2026-11-21 예비 매수분: 4차와 따로, 1차 매수가 −15% 아래로 마감한 날 1회. 목표가·보유 기한은 그대로
+  const RES_PAST='과거 이렇게 산 예비분은 실제 TQQQ 3번·QLD 4번 모두 이익(2018-12 손실 거래에서도 +14%)';
+  if(P.rbuy&&!I.res&&n){
+    const hit=regLow!=null&&regLow<=P.rbuy;
+    out.push({side:'buy',t:'예비 1회 · 1차 −15% 아래 마감',p:P.rbuy,ps:hit?'체결 추정':'이하 지정가',
+      s:(hit?`오늘 저가 $${fmt(regLow)} ≤ $${fmt(P.rbuy)} — 걸어 뒀다면 체결됐어요`:price<P.rbuy?`지금 $${fmt(price)} — 장이 열리면 시가 근처에서 체결될 가능성이 높아요`:`지금 $${fmt(price)} · ${pct(P.rbuy/price-1)} 내려오면 체결, 안 내려오면 안 사요`)
+        +` · 전날 마감이 1차 매수가 $${fmt(I.lots[0].px)}의 −15%($${fmt(P.rline)})보다 낮아서 4차와 따로 1회 더 · 비중 ${I.size*100}%${sh(Math.min(price,P.rbuy))} · 목표가 $${fmt(P.tgt)}·보유 기한 그대로(같이 매도) · ${RES_PAST}`});
+  } else if(P.rline&&!I.res&&n){
+    out.push({side:'info',t:'예비 매수 기준 · 1차 −15%',p:P.rline,ps:'이 아래로 마감하면',
+      s:`1차 매수가 $${fmt(I.lots[0].px)}의 −15%예요. 이 아래로 마감하면 다음 날 아침 알림이 예비 1회(비중 ${I.size*100}%)를 알려 줘요 · 지금 $${fmt(price)}, 기준까지 ${pct(P.rline/price-1)} · 목표가는 그대로 · ${RES_PAST}`});
+  }
   if(n){
     const tgt=P.tgt;
     out.push({side:'sell',t:'보유 전량 매도 · 목표가',p:tgt,ps:'지정가',
       s:(P.top?`가장 비싸게 산 $${fmt(P.top)} +${+(I.tp*100).toFixed(1)}%`:`평균 단가 $${fmt(P.avg)} +${+(I.tp*100).toFixed(1)}%`)+` · 현재가 대비 ${pct(tgt/price-1)}`
         +(P.buy&&P.ntgt&&n<4?` · ${n+1}차가 체결되면 $${fmt(P.ntgt)} 이하로 정정(체결가가 낮을수록 더 낮게, 알림이 알려 줘요)`:'')
+        +(I.res?` · 예비분($${fmt(I.res.px)})도 같이 매도 → 예비분은 ${pct(tgt/I.res.px-1)}`:'')
         +(m.avg>0?` · 내 평균 단가 $${fmt(m.avg)}면 ${pct(tgt/m.avg-1)}`:'')});
     if(P.last)out.push({side:'sell',t:'보유 기한 정리 · 장마감 시장가(MOC)',p:null,ps:'',s:'오늘이 보유 기한이에요. 목표가에 안 팔리면 오늘 마감에 들고 있는 수량 전부'});
   }
-  if(P.full_buy||P.full_close){
+  if((P.full_buy||P.full_close)&&!(P.full_why==='cap'&&(P.rbuy||P.rline||I.res))){
     const dp=P.full_why==='deep';
     out.push({side:'info',t:`참고 신호 · ${dp?'QQQ 고점 대비 −40% 아래':'4차까지 다 참'}`,p:P.full_buy||P.full_close,ps:'전략 밖',
       s:dp?'전략은 −10~−25%에서만 매수해요. 과거 깊은 폭락에선 대부분 수익이었지만 사례가 적어요.':'전략상 더 사지 않아요. 여윳돈으로 샀다면 같은 목표가로 함께 관리.'});
@@ -305,6 +320,7 @@ function renderFills(){
   const rows=I.lots.map((l,i)=>({l,i})).filter(x=>!skip.has(x.i));
   if(!rows.length){$('fills').innerHTML=`<div class="empty">${skip.size?'애프터마켓 주문이 끝나면 여기에 체결로 들어와요.':'체결 내역이 없어요.'}</div>`;return}
   $('fills').innerHTML=rows.map(({l,i})=>{const r=price/l.px-1;return `<div class="ord"><span class="side buy">${i+1}차</span><span class="t">매수 체결<small>${l.d.slice(5)} · ${HOW[l.how]||'지정가'}</small></span><span class="p num">$${fmt(l.px)}<small class="${ud(r)}">현재 ${pct(r)}</small></span></div>`}).join('')
+    +(I.res?(r=>`<div class="ord"><span class="side buy">예비</span><span class="t">매수 체결<small>${I.res.d.slice(5)} · ${HOW['예비']}</small></span><span class="p num">$${fmt(I.res.px)}<small class="${ud(r)}">현재 ${pct(r)}</small></span></div>`)(price/I.res.px-1):'')
     +`<div class="note">전략대로 샀다고 보고 계산한 체결 내역이에요(실제 체결가는 증권사 앱 기준).</div>`;
 }
 
